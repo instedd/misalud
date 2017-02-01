@@ -50,7 +50,7 @@ RSpec.describe MessageProcessor, type: :model do
   describe "survey" do
     let(:phone) { "465789" }
 
-    it "shold track responses" do
+    it "should track responses (seen)" do
       allow(channel).to receive(:send_sms)
 
       subject.start_survey(phone)
@@ -65,6 +65,40 @@ RSpec.describe MessageProcessor, type: :model do
         "clinic" => 2,
         "satisfaction" => 5,
         "can_be_called" => false
+      })
+    end
+
+    it "should track responses (rejected)" do
+      allow(channel).to receive(:send_sms)
+
+      subject.start_survey(phone)
+      subject.accept phone, "no"
+      subject.accept phone, "4"
+      subject.accept phone, "1"
+      subject.accept phone, "yes"
+
+      contact = Contact.find_by(phone: phone)
+      expect(contact.survey_data).to eq({
+        "seen" => false,
+        "clinic" => 1,
+        "reason_not_seen" => "rejected",
+        "can_be_called" => true
+      })
+    end
+
+    it "should track responses (cost)" do
+      allow(channel).to receive(:send_sms)
+
+      subject.start_survey(phone)
+      subject.accept phone, "no"
+      subject.accept phone, "3"
+      subject.accept phone, "yes"
+
+      contact = Contact.find_by(phone: phone)
+      expect(contact.survey_data).to eq({
+        "seen" => false,
+        "reason_not_seen" => "cost",
+        "can_be_called" => true
       })
     end
   end

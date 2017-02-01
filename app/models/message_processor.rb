@@ -13,7 +13,7 @@ class MessageProcessor
       respond_to do |r|
         r.yes {
           update "pending_clinic", { "seen" => true }
-          send_sms "Which one you choose? Reply with 1. for NYC Free Clinic, 2. for Weill Cornell, 3. for Columbia"
+          send_sms CLINIC_OPTIONS
         }
         r.no {
           update "pending_reason_not_seen", { "seen" => false }
@@ -58,7 +58,29 @@ class MessageProcessor
         }
       end
     when "pending_reason_not_seen"
+      respond_to do |r|
+        r.digit(1,3) { |d|
+          update "pending_can_be_called", { "reason_not_seen" => NOT_SEEN_REASON[d] }
+          send_sms "can we call you back to talk about your experience? #{REPLY_YES_NO}"
+        }
+        r.digit(4,4) { |d|
+          update "pending_clinic_not_seen", { "reason_not_seen" => NOT_SEEN_REASON[d] }
+          send_sms CLINIC_OPTIONS
+        }
+        r.otherwise {
+          send_sms "We didn't get that. Please reply '1' to '4'."
+        }
+      end
     when "pending_clinic_not_seen"
+      respond_to do |r|
+        r.digit(1,3) { |d|
+          update "pending_can_be_called", { "clinic" => d }
+          send_sms "can we call you back to talk about your experience? #{REPLY_YES_NO}"
+        }
+        r.otherwise {
+          send_sms "We didn't get that. Please reply '1', '2' or '3'."
+        }
+      end
     end
   end
 
@@ -74,6 +96,8 @@ class MessageProcessor
 
   REPLY_YES_NO = "Reply yes or no"
   START_SURVEY = "Last time we recommend you some clinics. Where you seen by someone? #{REPLY_YES_NO}"
+  CLINIC_OPTIONS = "Which one you choose? Reply with 1. for NYC Free Clinic, 2. for Weill Cornell, 3. for Columbia"
+  NOT_SEEN_REASON = { 1 => "could_not_get_there", 2 => "health_change", 3 => "cost", 4 => "rejected" }
 
   private
 
