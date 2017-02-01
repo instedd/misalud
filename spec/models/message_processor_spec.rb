@@ -46,4 +46,26 @@ RSpec.describe MessageProcessor, type: :model do
       subject.accept(unkown_phone, "lorem ipsum")
     end
   end
+
+  describe "survey" do
+    let(:phone) { "465789" }
+
+    it "shold track responses" do
+      allow(channel).to receive(:send_sms)
+
+      subject.start_survey(phone)
+      subject.accept phone, "yes"
+      subject.accept phone, "2"
+      subject.accept phone, "5"
+      subject.accept phone, "no"
+
+      contact = Contact.find_by(phone: phone)
+      expect(contact.survey_data).to eq({
+        "seen" => true,
+        "clinic" => 2,
+        "satisfaction" => 5,
+        "can_be_called" => false
+      })
+    end
+  end
 end
