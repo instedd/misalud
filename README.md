@@ -1,24 +1,12 @@
-# README
+# MiSalud
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Twilio configuration
 
-Things you may want to cover:
+Write twilio channel information in `config/settings(.local).yml`.
+Use ngrok or similar to get a public address to setup twilio webhook.
+Run the following with your public address to setup the webhook.
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```
+$ bundle exec rails c
+irb(main):003:0> SmsChannel.new.config_webhook "http://99e8e942.ngrok.io/twilio/sms"
+```
