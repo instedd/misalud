@@ -36,6 +36,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'config'
 gem 'haml-rails'
 gem 'twilio-ruby'
+gem 'listings'
 
 source 'https://rails-assets.org' do
   gem 'rails-assets-materialize'

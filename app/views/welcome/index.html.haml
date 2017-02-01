@@ -11,3 +11,10 @@
             %label{for: "phone"} Telephone +1..
       .card-action
         %button.btn.waves-effect.waves-light{type: "submit"} Start
+
+.row
+  .col.s12
+    .card
+      .card-content
+        %span.card-title Contacts
+        = render_listing :contacts
