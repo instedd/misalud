@@ -5,5 +5,6 @@ Rails.application.routes.draw do
   post 'start_survey', to: 'welcome#start_survey'
 
   post 'twilio/sms'
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+
+  match "services/find-clinic", to: "services#find_clinic", via: [:get, :post]
 end

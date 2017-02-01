@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<verboice-service>
+  <name>MiSalud Service</name>
+  <steps>
+    <step name="find-clinic"
+      display-name="Find clinic"
+      icon="medicalkit"
+      type="callback"
+      callback-url="/services/find-clinic">
+      <settings>
+        <variable name="lang" display-name="Language" type="string"/>
+        <variable name="pregnancy" display-name="Pregnancy" type="string"/>
+        <variable name="when" display-name="When" type="string"/>
+        <variable name="where" display-name="Where" type="string"/>
+        <variable name="knowncondition" display-name="Known condition" type="string"/>
+      </settings>
+      <response type="flow" />
+    </step>
+    <step name="clinics-sms"
+      display-name="Send clinics via SMS"
+      icon="mail"
+      type="callback"
+      callback-url="/services/clinics-sms">
+      <settings>
+        <variable name="lang" display-name="Language" type="string"/>
+      </settings>
+      <response type="none" />
+    </step>
+  </steps>
+</verboice-service>
