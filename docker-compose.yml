@@ -1,0 +1,15 @@
+version: '2'
+services:
+  app:
+    image: instedd/misalud:local
+    build: .
+    environment:
+      DATABASE_URL: postgres://postgres:password@db/misalud
+    ports:
+      - "3000:80"
+  db:
+    image: postgres:9.6.1
+    environment:
+      POSTGRES_DB: misalud
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
