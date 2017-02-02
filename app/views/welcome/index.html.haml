@@ -12,6 +12,17 @@
       .card-action
         %button.btn.waves-effect.waves-light{type: "submit"} Start
 
+  .col.s12.m6
+    .card
+      .card-content
+        %span.card-title.center
+          Find clinic calling
+
+          = Settings.twilio.phone_number
+
+    %p
+      = link_to "Go to verboice", "#{Settings.verboice.url}/projects/#{Settings.verboice.project}/contacts", target: '_blank'
+
 .row
   .col.s12
     .card

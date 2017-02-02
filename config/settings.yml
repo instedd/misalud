@@ -2,3 +2,6 @@ twilio:
   sid:
   token:
   phone_number: "+1..."
+verboice:
+  url: http://verboice.instedd.org
+  project: 1
