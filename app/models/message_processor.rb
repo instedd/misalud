@@ -37,7 +37,7 @@ class MessageProcessor
       respond_to do |r|
         r.digit(1,5) { |d|
           update "pending_can_be_called", { "satisfaction" => d }
-          send_sms "can we call you back to talk about your experience? #{REPLY_YES_NO}"
+          send_sms CAN_BE_CALLED
         }
         r.otherwise {
           send_sms "We didn't get that. Please reply '1' to '5'."
