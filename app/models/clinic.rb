@@ -27,7 +27,8 @@ class Clinic < ApplicationRecord
     clinic.save!
   end
 
-  def self.pick
+  def self.pick(clinic_filter = {})
+    # TODO use clinic_filter
     clinics = Clinic.order(selected_times: :asc)
 
     clinics = clinics.first(3)

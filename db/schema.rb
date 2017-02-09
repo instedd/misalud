@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170209000839) do
+ActiveRecord::Schema.define(version: 20170209003032) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,6 +33,15 @@ ActiveRecord::Schema.define(version: 20170209000839) do
     t.text     "survey_data"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+    t.integer  "clinic1_id"
+    t.integer  "clinic2_id"
+    t.integer  "clinic3_id"
+    t.index ["clinic1_id"], name: "index_contacts_on_clinic1_id", using: :btree
+    t.index ["clinic2_id"], name: "index_contacts_on_clinic2_id", using: :btree
+    t.index ["clinic3_id"], name: "index_contacts_on_clinic3_id", using: :btree
   end
 
+  add_foreign_key "contacts", "clinics", column: "clinic1_id"
+  add_foreign_key "contacts", "clinics", column: "clinic2_id"
+  add_foreign_key "contacts", "clinics", column: "clinic3_id"
 end
