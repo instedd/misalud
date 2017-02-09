@@ -9,7 +9,11 @@ RSpec.describe Clinic, type: :model do
           "short_name" => "LorIp",
           "address" => "Place",
           "schedule" => "Mon-Sun 8:00-17:00",
-          "walkin_schedule" => "Mon-Fri 12:00-14:00",
+          "walk_in_schedule" => "Mon-Fri 12:00-14:00",
+          "free_clinic" => true,
+          "women_care" => false,
+          "latitude" => 20.0,
+          "longitude" => -20.0
         }
       }.to change(Clinic, :count).by(1)
 
@@ -19,8 +23,10 @@ RSpec.describe Clinic, type: :model do
       expect(clinic.short_name).to eq("LorIp")
       expect(clinic.address).to eq("Place")
       expect(clinic.schedule).to eq("Mon-Sun 8:00-17:00")
-      expect(clinic.walkin_schedule).to eq("Mon-Fri 12:00-14:00")
+      expect(clinic.walk_in_schedule).to eq("Mon-Fri 12:00-14:00")
       expect(clinic.selected_times).to eq(0)
+      expect(clinic.latitude).to eq(20)
+      expect(clinic.longitude).to eq(-20)
     end
 
     it "should update record based on resmap_id and do not touch other fields" do

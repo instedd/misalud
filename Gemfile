@@ -38,6 +38,10 @@ gem 'haml-rails'
 gem 'twilio-ruby'
 gem 'listings'
 
+gem 'rest-client', "< 2"
+gem 'alto_guisso', github: "instedd/alto_guisso", branch: 'master'
+gem 'resource_map_api_client', github: "instedd/ruby-resource_map_api_client", branch: 'master'
+
 source 'https://rails-assets.org' do
   gem 'rails-assets-materialize'
 end

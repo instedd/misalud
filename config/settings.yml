@@ -5,3 +5,8 @@ twilio:
 verboice:
   url: http://verboice.instedd.org
   project: 1
+resmap:
+  host: resourcemap.instedd.org
+  user:
+  pass:
+  collection_id:
