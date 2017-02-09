@@ -10,10 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170201170854) do
+ActiveRecord::Schema.define(version: 20170209000839) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "clinics", force: :cascade do |t|
+    t.integer  "resmap_id"
+    t.string   "name"
+    t.string   "short_name"
+    t.string   "address"
+    t.string   "schedule"
+    t.string   "walkin_schedule"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "selected_times"
+  end
 
   create_table "contacts", force: :cascade do |t|
     t.string   "phone"
