@@ -12,7 +12,7 @@ class Clinic < ApplicationRecord
   end
 
   def self.import
-    Resmap.new.import_sites { |site| import_clinic(site.id, site.properties.merge("latitude" => site.lat, "longitude" => site.long)) }
+    Resmap.new.import_sites { |site| import_clinic(site.id, site.properties.merge("name" => site.name, "latitude" => site.lat, "longitude" => site.long)) }
   end
 
   def self.import_clinic(resmap_id, attributes, other_attrs={})
