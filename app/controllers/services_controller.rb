@@ -13,15 +13,26 @@ class ServicesController < ApplicationController
   end
 
   def track_contact
-    contact = Contact.find_or_initialize_by(phone: params[:phone_number]) do |contact|
-      contact.survey_status = ""
-      contact.survey_data = {}
-    end
+    contact = Contact.find_or_initialize_by(phone: params[:phone_number])
     contact.tracking_status = params[:tracking_status]
-    if params[:tracking_status] == "call_started"
-      contact.call_started_at = Time.now.utc
-      # TODO schedule a background job for a 3 min timeout or update it on request
+    contact.save!
+
+    head :ok
+  end
+
+  def status_callback
+    contact = Contact.find_or_initialize_by(phone: params[:From])
+
+    case params[:CallStatus]
+    when "in-progress"
+      contact.tracking_status = "call_started"
+      contact.call_sid = params[:CallSid]
+    when "failed"
+      contact.tracking_status = "hung_up"
+    when "completed"
+      contact.tracking_status = "voice_info"
     end
+
     contact.save!
 
     head :ok

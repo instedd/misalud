@@ -15,7 +15,7 @@ class ContactsListing < Listings::Base
 
   column :survey_status do |contact, status|
     if format == :html
-      status.humanize
+      status.try &:humanize
     else
       status
     end

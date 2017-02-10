@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170209210056) do
+ActiveRecord::Schema.define(version: 20170210173445) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 20170209210056) do
     t.integer  "clinic3_id"
     t.string   "tracking_status"
     t.datetime "call_started_at"
+    t.string   "call_sid"
     t.index ["clinic1_id"], name: "index_contacts_on_clinic1_id", using: :btree
     t.index ["clinic2_id"], name: "index_contacts_on_clinic2_id", using: :btree
     t.index ["clinic3_id"], name: "index_contacts_on_clinic3_id", using: :btree
