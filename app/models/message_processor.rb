@@ -85,11 +85,14 @@ class MessageProcessor
   end
 
   def start_survey(phone)
-    Contact.find_or_create_by(phone: phone).tap do |contact|
-      contact.survey_status = "pending_seen"
-      contact.survey_data = {}
-      contact.save!
+    contact = Contact.find_or_initialize_by(phone: phone) do |contact|
+      # values for fresh contacts, should not happen actually
+      contact.tracking_status = "sms_info"
     end
+
+    contact.survey_status = "pending_seen"
+    contact.survey_data = {}
+    contact.save!
 
     @channel.send_sms(phone, START_SURVEY)
   end

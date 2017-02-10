@@ -12,4 +12,18 @@ class ServicesController < ApplicationController
     render xml: "<Response><Say>#{text}</Say></Response>"
   end
 
+  def track_contact
+    contact = Contact.find_or_initialize_by(phone: params[:phone_number]) do |contact|
+      contact.survey_status = ""
+      contact.survey_data = {}
+    end
+    contact.tracking_status = params[:tracking_status]
+    if params[:tracking_status] == "call_started"
+      contact.call_started_at = Time.now.utc
+      # TODO schedule a background job for a 3 min timeout or update it on request
+    end
+    contact.save!
+
+    head :ok
+  end
 end

@@ -7,4 +7,5 @@ Rails.application.routes.draw do
   post 'twilio/sms'
 
   match "services/find-clinic", to: "services#find_clinic", via: [:get, :post]
+  match "services/track-contact", to: "services#track_contact", via: [:get, :post]
 end
