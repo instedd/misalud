@@ -16,15 +16,18 @@
       </settings>
       <response type="flow" />
     </step>
-    <step name="clinics-sms"
-      display-name="Send clinics via SMS"
-      icon="mail"
+    <step name="get-clinics"
+      display-name="Get found clinics address and schedules"
+      icon="medicalkit"
       type="callback"
-      callback-url="/services/clinics-sms">
+      callback-url="/services/get-clinics">
       <settings>
-        <variable name="lang" display-name="Language" type="string"/>
       </settings>
-      <response type="none" />
+      <response type="variables">
+        <variable name="clinic1" display-name="Clinic 1" type="string"/>
+        <variable name="clinic2" display-name="Clinic 2" type="string"/>
+        <variable name="clinic3" display-name="Clinic 3" type="string"/>
+      </response>
     </step>
     <step name="register-contact"
       display-name="Track a contact inbound call"

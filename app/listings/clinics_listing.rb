@@ -5,5 +5,6 @@ class ClinicsListing < Listings::Base
   column :address
   column :schedule
   column :walk_in_schedule
+  column :selected_times
 
 end

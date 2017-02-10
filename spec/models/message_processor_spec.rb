@@ -3,6 +3,11 @@ require 'rails_helper'
 RSpec.describe MessageProcessor, type: :model do
   let(:channel) { double("fake_sms_channel") }
   let(:subject) { MessageProcessor.new(channel) }
+  before(:each) do
+    (1..3).each do |i|
+      Clinic.import_clinic i, {"name" => "Name #{i}"}
+    end
+  end
 
   describe "#start_survey" do
     let(:phone) { "123456" }

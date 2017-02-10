@@ -3,13 +3,31 @@ class ServicesController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def find_clinic
+    contact = Contact.find_by(call_sid: params[:CallSid])
+    contact.pick_clinics
+
     text = if params[:lang] == "en"
-      "You can go to New York City Free Clinic, Weill Cornell Community Clinic or Columbia Student Medical Outreach."
+      clinic_names = contact.clinics.map(&:name).to_sentence(words_connector: ", ", two_words_connector: " or ")
+      "You can go to #{clinic_names}."
     else
-      "Usted puede ir a New York City Free Clinic, Weill Cornell Community Clinic o Columbia Student Medical Outreach."
+      clinic_names = contact.clinics.map(&:name).to_sentence(words_connector: ", ", two_words_connector: " o ")
+      "Usted puede ir a #{clinic_names}."
     end
 
     render xml: "<Response><Say>#{text}</Say></Response>"
+  end
+
+  def get_clinics
+    contact = Contact.find_by(call_sid: params[:CallSid])
+
+    variables = {}
+    contact.clinics.each_with_index do |clinic, index|
+      # TODO add borough
+      # TODO add send walk_in_schedule if appropiate
+      variables["clinic#{index + 1}"] = "#{clinic.name}, #{clinic.address}, #{clinic.schedule}"
+    end
+
+    render json: variables
   end
 
   def track_contact

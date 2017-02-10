@@ -79,5 +79,28 @@ RSpec.describe ServicesController, type: :controller do
     end
   end
 
+  describe "POST #find-clinic" do
+    let(:phone) { "1999345567" }
+    let(:call_sid) { "465789" }
+    let(:contact) { contact = Contact.find_by(phone: phone) }
+
+    before(:each) do
+      (1..20).each do |i|
+        Clinic.import_clinic i, {"name" => "Name #{i}"}
+      end
+    end
+
+    before(:each) do
+      post :status_callback, params: { CallStatus: "in-progress", From: phone, CallSid: call_sid }
+    end
+
+    it "should find contact by call_sid" do
+      expect(contact.clinics).to be_empty
+      post :find_clinic, params: { CallSid: call_sid }
+      contact.reload
+      expect(contact.clinics).to_not be_empty
+    end
+  end
+
 
 end
