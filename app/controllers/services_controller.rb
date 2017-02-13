@@ -20,12 +20,18 @@ class ServicesController < ApplicationController
     raise "Contact for call id #{call_sid || 'nil'} not found" if @contact.nil?
     @clinics = @contact.pick_clinics(opts)
 
-    # Build response text, to be replaced by recordings
-    connector = ", #{I18n.t(:or, locale: params[:lang])} "
-    text = @clinics.map(&:short_name).to_sentence(two_words_connector: connector, last_word_connector: connector)
-    text = "#{I18n.t(:you_can_go_to, locale: params[:lang])} #{text}"
+    # Build response text: clinics names are to be read in English, and the rest in the user's locale
+    nodes = [ to_say_node(I18n.t(:you_can_go_to, locale: params[:lang]), params[:lang]) ]
+    @clinics.each_with_index do |clinic, index|
+      if (index == @clinics.size - 1) && (@clinics.size > 1)
+        nodes << to_say_node(I18n.t(:or, locale: params[:lang]), params[:lang])
+        nodes << to_say_node(clinic.short_name, "en")
+      else
+        nodes << to_say_node("#{clinic.short_name}, ", "en")
+      end
+    end
 
-    render xml: "<Response><Say>#{text}</Say></Response>"
+    render xml: "<Response>#{nodes.join("")}</Response>"
   end
 
   def get_clinics
@@ -65,5 +71,11 @@ class ServicesController < ApplicationController
     contact.save!
 
     head :ok
+  end
+
+  private
+
+  def to_say_node(text, lang)
+    "<Say language=\"#{lang}\">#{text}</Say>"
   end
 end
