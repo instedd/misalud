@@ -1,5 +1,9 @@
 # MiSalud
 
+[![CircleCI](https://circleci.com/gh/instedd/misalud.svg?style=svg)](https://circleci.com/gh/instedd/misalud)
+
+MiSalud pilot project for Doctors of the World NYC.
+
 ## Twilio configuration
 
 Write twilio channel information in `config/settings(.local).yml`.
