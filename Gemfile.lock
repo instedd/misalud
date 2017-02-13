@@ -167,6 +167,10 @@ GEM
     rails-assets-jquery (3.1.1)
     rails-assets-materialize (0.98.0)
       rails-assets-jquery (>= 2.1.1)
+    rails-controller-testing (1.0.1)
+      actionpack (~> 5.x)
+      actionview (~> 5.x)
+      activesupport (~> 5.x)
     rails-dom-testing (2.0.2)
       activesupport (>= 4.2.0, < 6.0)
       nokogiri (~> 1.6)
@@ -260,6 +264,7 @@ DEPENDENCIES
   puma (~> 3.0)
   rails (~> 5.0.1)
   rails-assets-materialize!
+  rails-controller-testing
   resource_map_api_client!
   rest-client (< 2)
   rspec-rails

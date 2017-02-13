@@ -25,6 +25,7 @@ class Clinic < ApplicationRecord
     clinic.short_name = attributes["short_name"]
     clinic.address = attributes["address"]
     clinic.schedule = attributes["schedule"]
+    clinic.borough = attributes["borough"]
     clinic.walk_in_schedule = attributes["walk_in_schedule"]
     clinic.free_clinic = attributes["free_clinic"]
     clinic.women_care = attributes["women_care"]
@@ -34,11 +35,9 @@ class Clinic < ApplicationRecord
     clinic.save!
   end
 
-  def self.pick(clinic_filter = {})
-    # TODO use clinic_filter
-    clinics = Clinic.order(selected_times: :asc)
-
-    clinics = clinics.first(3)
+  def self.pick(filter = {})
+    # TODO: prioritise those with fewer visits so far
+    clinics = filtered(filter).all.sample(3)
 
     clinics.each do |c|
       c.with_lock do
@@ -48,5 +47,19 @@ class Clinic < ApplicationRecord
     end
 
     clinics
+  end
+
+  def self.filtered(filter = {})
+    clinics = Clinic
+
+    # Disregard all other filters if it's women seeking care
+    if filter[:pregnancy]
+      return clinics.where(women_care: true)
+    end
+
+    clinics = clinics.where(borough: filter[:borough]) if filter[:borough]
+    clinics = clinics.order(free_clinic: (filter[:free_clinic] ? :asc : :desc))
+
+    return clinics
   end
 end
