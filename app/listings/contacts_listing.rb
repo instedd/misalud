@@ -4,9 +4,18 @@ class ContactsListing < Listings::Base
   export :csv, :xls
 
   column :phone
-  column :survey_status do |contact, status|
+  column :tracking_status, title: 'Status' do |contact, status|
     if format == :html
       status.humanize
+    else
+      status
+    end
+  end
+  column :call_started_at
+
+  column :survey_status do |contact, status|
+    if format == :html
+      status.try &:humanize
     else
       status
     end

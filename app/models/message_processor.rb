@@ -13,7 +13,7 @@ class MessageProcessor
       respond_to do |r|
         r.yes {
           update "pending_clinic", { "seen" => true }
-          send_sms CLINIC_OPTIONS
+          send_sms clinic_options
         }
         r.no {
           update "pending_reason_not_seen", { "seen" => false }
@@ -65,7 +65,7 @@ class MessageProcessor
         }
         r.digit(4,4) { |d|
           update "pending_clinic_not_seen", { "reason_not_seen" => NOT_SEEN_REASON[d] }
-          send_sms CLINIC_OPTIONS
+          send_sms clinic_options
         }
         r.otherwise {
           send_sms "We didn't get that. Please reply '1' to '4'."
@@ -85,18 +85,21 @@ class MessageProcessor
   end
 
   def start_survey(phone)
-    Contact.find_or_create_by(phone: phone).tap do |contact|
-      contact.survey_status = "pending_seen"
-      contact.survey_data = {}
-      contact.save!
+    contact = Contact.find_or_initialize_by(phone: phone) do |contact|
+      # values for fresh contacts, should not happen actually
+      contact.tracking_status = "sms_info"
     end
+
+    contact.survey_status = "pending_seen"
+    contact.survey_data = {}
+    contact.save!
 
     @channel.send_sms(phone, START_SURVEY)
   end
 
   REPLY_YES_NO = "Reply yes or no"
   START_SURVEY = "Last time we recommend some clinics to you. Were you seen by someone? #{REPLY_YES_NO}"
-  CLINIC_OPTIONS = "Which one did you choose? Reply with 1. for NYC Free Clinic, 2. for Weill Cornell, 3. for Columbia"
+  CLINIC_OPTIONS_PREFIX = "Which one did you choose? Reply with "
   CAN_BE_CALLED = "Can we call you back later to talk about your experience? #{REPLY_YES_NO}"
   NOT_SEEN_REASON = { 1 => "could_not_get_there", 2 => "health_change", 3 => "cost", 4 => "rejected" }
 
@@ -108,6 +111,19 @@ class MessageProcessor
     reply_to(@body) do |r|
       yield r
     end
+  end
+
+  def clinic_options
+    "#{CLINIC_OPTIONS_PREFIX} #{clinic_short_names_as_options}"
+  end
+
+  def clinic_short_names_as_options
+    options = ""
+    @contact.clinics.each_with_index do |clinic, index|
+      options << ", " if options != ""
+      options << "#{index+1}. for #{clinic.short_name}"
+    end
+    options
   end
 
   def send_sms(body)

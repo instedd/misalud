@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Contact, type: :model do
   describe '#pick_clinics' do
-    let(:contact) { Contact.create! }
+    let(:contact) { Contact.create! tracking_status: 'call_started' }
 
     context 'with many clinics' do
       before(:each) do
