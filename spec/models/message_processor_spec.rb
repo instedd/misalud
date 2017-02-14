@@ -122,7 +122,7 @@ RSpec.describe MessageProcessor, type: :model do
       expect(channel).to receive(:send_sms).with(contact.phone, I18n.t('survey.start_message', locale: 'en'))
       subject.start_survey(contact.phone)
 
-      expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.which_clinic_did_you_choose', locale: 'en')} Reply with '1' for Name 1, '2' for Name 2")
+      expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.which_clinic_did_you_choose', locale: 'en')} Please reply with '1' for Name 1, '2' for Name 2")
       subject.accept contact.phone, "yes"
 
       expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.ask_satisfaction', locale: 'en')}")
@@ -141,7 +141,7 @@ RSpec.describe MessageProcessor, type: :model do
       expect(channel).to receive(:send_sms).with(contact.phone, I18n.t('survey.start_message', locale: 'es'))
       subject.start_survey(contact.phone)
 
-      expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.which_clinic_did_you_choose', locale: 'es')} Conteste con '1' para Name 1, '2' para Name 2")
+      expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.which_clinic_did_you_choose', locale: 'es')} Por favor conteste con '1' para Name 1, '2' para Name 2")
       subject.accept contact.phone, "yes"
 
       expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.ask_satisfaction', locale: 'es')}")
