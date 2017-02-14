@@ -11,8 +11,12 @@
  * It is generally better to create a new file per style scope.
  *
  *= require listings
- *= require_tree .
  *= require_self
  */
 
-@import 'materialize';
+ @import "materialize/components/color";
+ $primary-color: rgb(63, 84, 179) !default;
+ $secondary-color: color("green", "base") !default;
+ $footer-bg-color: rgb(225, 225, 225) !default;
+ @import 'materialize';
+ @import 'layout'

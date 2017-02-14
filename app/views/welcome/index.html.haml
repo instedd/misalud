@@ -1,5 +1,16 @@
 .row
   .col.s12.m6
+    .card
+      .card-content
+        %span.card-title
+          Find a clinic calling
+
+          = Settings.twilio.phone_number
+      .card-action
+        = link_to "Go to verboice", "#{Settings.verboice.url}/projects/#{Settings.verboice.project}/contacts", target: '_blank'
+
+.row
+  .col.s12.m6
     = form_tag(start_survey_path, method: :post)
     .card
       .card-content
@@ -8,31 +19,6 @@
           .input-field.col.s12
             %i.material-icons.prefix phone
             %input{id: "phone", type: "text", name: "phone"}
-            %label{for: "phone"} Telephone +1..
+            %label{for: "phone"} Phone number
       .card-action
         %button.btn.waves-effect.waves-light{type: "submit"} Start
-
-  .col.s12.m6
-    .card
-      .card-content
-        %span.card-title.center
-          Find clinic calling
-
-          = Settings.twilio.phone_number
-
-    %p
-      = link_to "Go to verboice", "#{Settings.verboice.url}/projects/#{Settings.verboice.project}/contacts", target: '_blank'
-
-.row
-  .col.s12
-    .card
-      .card-content
-        %span.card-title Contacts
-        = render_listing :contacts
-
-.row
-  .col.s12
-    .card
-      .card-content
-        %span.card-title Clinics
-        = render_listing :clinics

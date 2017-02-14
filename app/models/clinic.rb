@@ -8,25 +8,13 @@ class Clinic < ApplicationRecord
     Borough[self.borough].try(:label)
   end
 
-  def self.generate
-    (1..20).each do |i|
-      import_clinic i, {
-        "name" => "Name #{i}",
-        "short_name" => "Short name #{i}",
-        "address" => "Address #{i}",
-        "schedule" => "Schedule #{i}",
-        "walk_in_schedule" => "Walk_in_schedule #{i}"
-      }
-    end
-  end
-
   def self.import
     Resmap.new.import_sites { |site| import_clinic(site.id, site.properties.merge("name" => site.name, "latitude" => site.lat, "longitude" => site.long)) }
   end
 
-  def self.import_clinic(resmap_id, attributes, other_attrs={})
+  def self.import_clinic(resmap_id, attributes)
     clinic = Clinic.find_or_initialize_by(resmap_id: resmap_id) do |clinic|
-      # values for fresh clinics
+      # Values for fresh clinics
       clinic.selected_times = 0
     end
 

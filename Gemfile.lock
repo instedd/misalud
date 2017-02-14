@@ -17,7 +17,6 @@ GIT
 
 GEM
   remote: https://rubygems.org/
-  remote: https://rails-assets.org/
   specs:
     actioncable (5.0.1)
       actionpack (= 5.0.1)
@@ -130,6 +129,8 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
+    materialize-sass (0.98.0)
+      sass (~> 3.3)
     memoist (0.15.0)
     method_source (0.8.2)
     mime-types (3.1)
@@ -164,9 +165,6 @@ GEM
       bundler (>= 1.3.0, < 2.0)
       railties (= 5.0.1)
       sprockets-rails (>= 2.0.0)
-    rails-assets-jquery (3.1.1)
-    rails-assets-materialize (0.98.0)
-      rails-assets-jquery (>= 2.1.1)
     rails-controller-testing (1.0.1)
       actionpack (~> 5.x)
       actionview (~> 5.x)
@@ -260,10 +258,10 @@ DEPENDENCIES
   jquery-rails
   listen (~> 3.0.5)
   listings
+  materialize-sass
   pg (~> 0.18)
   puma (~> 3.0)
   rails (~> 5.0.1)
-  rails-assets-materialize!
   rails-controller-testing
   resource_map_api_client!
   rest-client (< 2)

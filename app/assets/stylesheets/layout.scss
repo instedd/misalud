@@ -1,0 +1,30 @@
+nav {
+  .brand-logo {
+    img {
+      height: 50px;
+      top: 8px;
+      left: 5px;
+      position: relative;
+    }
+  }
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+.footer-copyright img {
+  height: 50px;
+}
+
+@media #{$large-and-up} {
+  .container {
+    width: 85%;
+  }
+}
