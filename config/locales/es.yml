@@ -1,4 +1,17 @@
 es:
   or: "o"
+  for: "para"
   you_can_go_to: "Usted puede ir a"
   no_clinics_found: "Lo sentimos, no hemos encontrado clínicas disponibles"
+  survey:
+    start_message: "Ha asistido a alguna de las clínicas que le recomendamos? Conteste SI o NO."
+    which_clinic_did_you_choose: "Cuál eligió?"
+    reply_with: "Conteste con"
+    can_we_call_later: "Podemos llamarlo más tarde para hablar acerca de su experiencia? Conteste SI o NO."
+    why_not_seen: "Por qué? Responda con un número: 1.No pudo llegar allí  2.No tuvo más problema de salud  3.Costo  4.Se le denegó el servicio"
+    ask_satisfaction: "Quedó usted satisfecho con el servicio? Conteste de 1 a 5: 1 para una mala experiencia, 5 para excelente."
+    thanks: "Muchas gracias!"
+    error_yes_no: "Por favor responda 'SI' o 'NO'."
+    error_1_to_3: "Por favor responda '1', '2' o '3'."
+    error_1_to_4: "Por favor responda '1' a '4'."
+    error_1_to_5: "Por favor responda '1' a '5'."

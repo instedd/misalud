@@ -6,6 +6,8 @@ class MessageProcessor
   def accept(from, body)
     @contact = Contact.find_by(phone: from)
     return unless @contact
+
+    I18n.locale = @contact.language || "en"
     @body = body
 
     case @contact.survey_status
@@ -17,71 +19,73 @@ class MessageProcessor
         }
         r.no {
           update "pending_reason_not_seen", { "seen" => false }
-          send_sms "Why? Respond with one of the following numbers: 1.You couldn’t get there  2.Your health status changed  3.Cost  4.Went but refused service"
+          send_sms I18n.t("survey.why_not_seen")
         }
         r.otherwise {
-          send_sms "We didn't get that. Please reply 'yes' or 'no'."
+          send_sms I18n.t('survey.error_yes_no')
         }
       end
     when "pending_clinic"
       respond_to do |r|
         r.digit(1,3) { |d|
           update "pending_satisfaction", { "clinic" => d }
-          send_sms "Are you satisfied? 1. worst experience, 5. best experience."
+          send_sms I18n.t('survey.ask_satisfaction')
         }
         r.otherwise {
-          send_sms "We didn't get that. Please reply '1', '2' or '3'."
+          send_sms I18n.t('survey.error_1_to_3')
         }
       end
     when "pending_satisfaction"
       respond_to do |r|
         r.digit(1,5) { |d|
           update "pending_can_be_called", { "satisfaction" => d }
-          send_sms CAN_BE_CALLED
+          send_sms I18n.t('survey.can_we_call_later')
         }
         r.otherwise {
-          send_sms "We didn't get that. Please reply '1' to '5'."
+          send_sms I18n.t('survey.error_1_to_5')
         }
       end
     when "pending_can_be_called"
       respond_to do |r|
         r.yes {
           update "done", { "can_be_called" => true }
-          send_sms "Thank you!"
+          send_sms I18n.t('survey.thanks')
         }
         r.no {
           update "done", { "can_be_called" => false }
-          send_sms "Thank you!"
+          send_sms I18n.t('survey.thanks')
         }
         r.otherwise {
-          send_sms "We didn't get that. Please reply 'yes' or 'no'."
+          send_sms I18n.t('survey.error_yes_no')
         }
       end
     when "pending_reason_not_seen"
       respond_to do |r|
         r.digit(1,3) { |d|
           update "pending_can_be_called", { "reason_not_seen" => NOT_SEEN_REASON[d] }
-          send_sms CAN_BE_CALLED
+          send_sms I18n.t('survey.can_we_call_later')
         }
         r.digit(4,4) { |d|
           update "pending_clinic_not_seen", { "reason_not_seen" => NOT_SEEN_REASON[d] }
           send_sms clinic_options
         }
         r.otherwise {
-          send_sms "We didn't get that. Please reply '1' to '4'."
+          send_sms I18n.t('survey.error_1_to_4')
         }
       end
     when "pending_clinic_not_seen"
       respond_to do |r|
         r.digit(1,3) { |d|
           update "pending_can_be_called", { "clinic" => d }
-          send_sms CAN_BE_CALLED
+          send_sms I18n.t('survey.can_we_call_later')
         }
         r.otherwise {
-          send_sms "We didn't get that. Please reply '1', '2' or '3'."
+          send_sms I18n.t('survey.error_1_to_3')
         }
       end
     end
+  ensure
+    I18n.locale = "en"
   end
 
   def start_survey(phone)
@@ -94,13 +98,9 @@ class MessageProcessor
     contact.survey_data = {}
     contact.save!
 
-    @channel.send_sms(phone, START_SURVEY)
+    @channel.send_sms(phone, I18n.t('survey.start_message', locale: contact.language || 'en'))
   end
 
-  REPLY_YES_NO = "Reply yes or no"
-  START_SURVEY = "Last time we recommend some clinics to you. Were you seen by someone? #{REPLY_YES_NO}"
-  CLINIC_OPTIONS_PREFIX = "Which one did you choose? Reply with "
-  CAN_BE_CALLED = "Can we call you back later to talk about your experience? #{REPLY_YES_NO}"
   NOT_SEEN_REASON = { 1 => "could_not_get_there", 2 => "health_change", 3 => "cost", 4 => "rejected" }
 
   private
@@ -114,14 +114,14 @@ class MessageProcessor
   end
 
   def clinic_options
-    "#{CLINIC_OPTIONS_PREFIX} #{clinic_short_names_as_options}"
+    "#{I18n.t('survey.which_clinic_did_you_choose')} #{I18n.t('survey.reply_with')} #{clinic_short_names_as_options}"
   end
 
   def clinic_short_names_as_options
     options = ""
     @contact.clinics.each_with_index do |clinic, index|
       options << ", " if options != ""
-      options << "#{index+1}. for #{clinic.short_name}"
+      options << "'#{index+1}' #{I18n.t(:for)} #{clinic.display_name}"
     end
     options
   end

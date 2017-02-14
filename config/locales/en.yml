@@ -21,5 +21,18 @@
 
 en:
   or: "or"
+  for: "for"
   you_can_go_to: "You can go to"
   no_clinics_found: "We are sorry, but we haven't found any available clinics"
+  survey:
+    start_message: "Last time we recommend some clinics to you. Were you seen by someone? Reply yes or no."
+    which_clinic_did_you_choose: "Which one did you choose?"
+    reply_with: "Reply with"
+    can_we_call_later: "Can we call you back later to talk about your experience? Reply yes or no"
+    why_not_seen: "Why? Respond with one of the following numbers: 1.You couldn’t get there  2.Your health status changed  3.Cost  4.Went but refused service"
+    ask_satisfaction: "Were you satisfied? Answer 1 to 5: 1 for a bad experience, 5 for an excellent one."
+    thanks: "Thank you!"
+    error_yes_no: "We didn't get that. Please reply 'yes' or 'no'."
+    error_1_to_3: "We didn't get that. Please reply '1', '2' or '3'."
+    error_1_to_4: "We didn't get that. Please reply '1' to '4'."
+    error_1_to_5: "We didn't get that. Please reply '1' to '5'."

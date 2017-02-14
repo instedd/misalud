@@ -39,7 +39,13 @@ RSpec.describe MessageProcessor, type: :model do
     end
 
     it "should send message to channel" do
-      expect(channel).to receive(:send_sms).with(phone, MessageProcessor::START_SURVEY)
+      expect(channel).to receive(:send_sms).with(phone, I18n.t('survey.start_message', locale: 'en'))
+      subject.start_survey(phone)
+    end
+
+    it "should send message to channel with contact's language" do
+      Contact.create!(phone: phone, tracking_status: 'sms_info', language: 'es')
+      expect(channel).to receive(:send_sms).with(phone, I18n.t('survey.start_message', locale: 'es'))
       subject.start_survey(phone)
     end
   end
@@ -52,7 +58,7 @@ RSpec.describe MessageProcessor, type: :model do
     end
   end
 
-  describe "survey" do
+  describe "survey tracking" do
     let(:phone) { "465789" }
 
     it "should track responses (seen)" do
@@ -105,6 +111,47 @@ RSpec.describe MessageProcessor, type: :model do
         "reason_not_seen" => "cost",
         "can_be_called" => true
       })
+    end
+
+  end
+
+  describe "survey answers" do
+    let(:contact) { Contact.create!(phone: "465789", tracking_status: 'sms_info', language: 'en', clinic1: Clinic.all[0], clinic2: Clinic.all[1]) }
+
+    it "should send answers via channel" do
+      expect(channel).to receive(:send_sms).with(contact.phone, I18n.t('survey.start_message', locale: 'en'))
+      subject.start_survey(contact.phone)
+
+      expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.which_clinic_did_you_choose', locale: 'en')} Reply with '1' for Name 1, '2' for Name 2")
+      subject.accept contact.phone, "yes"
+
+      expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.ask_satisfaction', locale: 'en')}")
+      subject.accept contact.phone, "2"
+
+      expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.can_we_call_later', locale: 'en')}")
+      subject.accept contact.phone, "5"
+
+      expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.thanks', locale: 'en')}")
+      subject.accept contact.phone, "no"
+    end
+
+    it "should send answers via channel in contact's language" do
+      contact.update_column(:language, 'es')
+
+      expect(channel).to receive(:send_sms).with(contact.phone, I18n.t('survey.start_message', locale: 'es'))
+      subject.start_survey(contact.phone)
+
+      expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.which_clinic_did_you_choose', locale: 'es')} Conteste con '1' para Name 1, '2' para Name 2")
+      subject.accept contact.phone, "yes"
+
+      expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.ask_satisfaction', locale: 'es')}")
+      subject.accept contact.phone, "2"
+
+      expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.can_we_call_later', locale: 'es')}")
+      subject.accept contact.phone, "5"
+
+      expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.thanks', locale: 'es')}")
+      subject.accept contact.phone, "no"
     end
   end
 end
