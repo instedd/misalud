@@ -16,7 +16,7 @@ class SmsChannel
   end
 
   def self.clean_phone(phone_number)
-    phone_number.gsub(/[\+\-\s\(\)]/, '')
+    phone_number.gsub(/[\-\s\(\)]/, '')
   end
 
   private
