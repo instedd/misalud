@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ServicesController, type: :controller do
 
-  describe "GET #find_clinic" do
+  describe "GET #find-clinic" do
 
     let!(:contact) {
       Contact.create!(call_sid: 100, phone: "9991000", tracking_status: "call_started")
@@ -36,6 +36,12 @@ RSpec.describe ServicesController, type: :controller do
       expect(response.body).to include(clinics[1].short_name)
       expect(response.body).to include(clinics[2].short_name)
       expect(response.body).to include(clinics[3].short_name)
+
+      expect(contact.reload.pregnant).to eq(false)
+      expect(contact.urgent).to eq(true)
+      expect(contact.borough).to eq("brooklyn")
+      expect(contact.known_condition).to eq(false)
+      expect(contact.language).to eq("es")
     end
   end
 
@@ -116,27 +122,38 @@ RSpec.describe ServicesController, type: :controller do
     end
   end
 
-  describe "POST #find-clinic" do
-    let(:phone) { "1999345567" }
-    let(:call_sid) { "465789" }
-    let(:contact) { contact = Contact.find_by(phone: phone) }
+  describe "GET #get_clinics" do
 
-    before(:each) do
-      (1..20).each do |i|
-        Clinic.import_clinic i, {"name" => "Name #{i}"}
-      end
+    let(:clinic1) { Clinic.create!(resmap_id: 1, short_name: "Clinic 1", address: "ADDRESS1", schedule: "SCHEDULE", walk_in_schedule: "WALK_IN_SCHEDULE") }
+    let(:clinic2) { Clinic.create!(resmap_id: 2, short_name: "Clinic 2", address: "ADDRESS2", borough: "staten_island", schedule: "SCHEDULE", walk_in_schedule: "WALK_IN_SCHEDULE") }
+    let(:clinic3) { Clinic.create!(resmap_id: 3, short_name: "Clinic 3", address: "ADDRESS3", borough: "manhattan") }
+
+    it "retrieves clinics for contact" do
+      contact = Contact.create!(phone: "9991000", call_sid: 100, urgent: false, tracking_status: "voice_info", clinic1: clinic1, clinic2: clinic2, clinic3: clinic3)
+
+      get :get_clinics, params: { CallSid: 100 }
+
+      expect(assigns(:contact)).to eq(contact)
+      variables = JSON.parse(response.body.to_s)
+
+      expect(variables["clinic1"]).to eq("Clinic 1, ADDRESS1, SCHEDULE")
+      expect(variables["clinic2"]).to eq("Clinic 2, ADDRESS2, Staten Island, SCHEDULE")
+      expect(variables["clinic3"]).to eq("Clinic 3, ADDRESS3, Manhattan")
     end
 
-    before(:each) do
-      post :status_callback, params: { CallStatus: "in-progress", From: phone, CallSid: call_sid }
+    it "retrieves clinics for contact with walk in schedule" do
+      contact = Contact.create!(phone: "9991000", call_sid: 100, urgent: true, tracking_status: "voice_info", clinic1: clinic1, clinic2: clinic2, clinic3: clinic3)
+
+      get :get_clinics, params: { CallSid: 100 }
+
+      expect(assigns(:contact)).to eq(contact)
+      variables = JSON.parse(response.body.to_s)
+
+      expect(variables["clinic1"]).to eq("Clinic 1, ADDRESS1, WALK_IN_SCHEDULE")
+      expect(variables["clinic2"]).to eq("Clinic 2, ADDRESS2, Staten Island, WALK_IN_SCHEDULE")
+      expect(variables["clinic3"]).to eq("Clinic 3, ADDRESS3, Manhattan")
     end
 
-    it "should find contact by call_sid" do
-      expect(contact.clinics).to be_empty
-      post :find_clinic, params: { CallSid: call_sid }
-      contact.reload
-      expect(contact.clinics).to_not be_empty
-    end
   end
 
 end

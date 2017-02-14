@@ -1,4 +1,13 @@
 class Clinic < ApplicationRecord
+
+  def display_name
+    name.presence || short_name
+  end
+
+  def borough_label
+    Borough[self.borough].try(:label)
+  end
+
   def self.generate
     (1..20).each do |i|
       import_clinic i, {

@@ -11,6 +11,7 @@ class ServicesController < ApplicationController
       pregnancy: (params[:pregnancy] == PREGNANT),
       urgent: (params[:when] == WHEN_URGENT),
       borough: Borough[params[:where]].try(&:name),
+      known_condition: (params[:knowncondition] == HAS_KNOWN_CONDITION),
       free_clinic: (params[:knowncondition] != HAS_KNOWN_CONDITION)
     }
 
@@ -19,6 +20,11 @@ class ServicesController < ApplicationController
     @contact = Contact.find_by(call_sid: call_sid)
     raise "Contact for call id #{call_sid || 'nil'} not found" if @contact.nil?
     @clinics = @contact.pick_clinics(opts)
+
+    if @clinics.empty?
+      text = to_say_node(I18n.t(:no_clinics_found, locale: params[:lang]))
+      render xml: "<Response>#{text}</Response>"
+    end
 
     # Build response text: clinics names are to be read in English, and the rest in the user's locale
     nodes = [ to_say_node(I18n.t(:you_can_go_to, locale: params[:lang]), params[:lang]) ]
@@ -35,13 +41,12 @@ class ServicesController < ApplicationController
   end
 
   def get_clinics
-    contact = Contact.find_by(call_sid: params[:CallSid])
+    @contact = Contact.find_by(call_sid: params[:CallSid])
 
     variables = {}
-    contact.clinics.each_with_index do |clinic, index|
-      # TODO add borough
-      # TODO add send walk_in_schedule if appropiate
-      variables["clinic#{index + 1}"] = "#{clinic.name}, #{clinic.address}, #{clinic.schedule}"
+    @contact.clinics.each_with_index do |clinic, index|
+      schedule = @contact.urgent ? clinic.walk_in_schedule : clinic.schedule
+      variables["clinic#{index + 1}"] = [clinic.display_name, clinic.address, clinic.borough_label, schedule].map(&:presence).compact.join(", ")
     end
 
     render json: variables
@@ -56,19 +61,23 @@ class ServicesController < ApplicationController
   end
 
   def status_callback
+    # TODO: Should we find_or_initialize_by CallSid?
     contact = Contact.find_or_initialize_by(phone: params[:From])
 
     case params[:CallStatus]
     when "in-progress"
-      contact.tracking_status = "call_started"
       contact.call_sid = params[:CallSid]
+      contact.tracking_status = "call_started"
+      contact.save!
     when "failed"
+      contact.sms_requested ||= (params[:sendsms] == "1")
       contact.tracking_status = "hung_up"
+      contact.save!
     when "completed"
+      contact.sms_requested ||= (params[:sendsms] == "1")
       contact.tracking_status = "voice_info"
+      contact.save!
     end
-
-    contact.save!
 
     head :ok
   end

@@ -14,6 +14,7 @@ class Contact < ApplicationRecord
   before_save :ensure_survey_data
 
   def pick_clinics(clinic_filter = {})
+    set_responses(clinic_filter) unless clinic_filter.blank?
     c1, c2, c3 = Clinic.pick(clinic_filter)
     self.clinic1 = c1
     self.clinic2 = c2
@@ -27,6 +28,14 @@ class Contact < ApplicationRecord
   end
 
   private
+
+  def set_responses(responses)
+    self.language = responses[:lang]
+    self.pregnant = responses[:pregnancy]
+    self.urgent = responses[:urgent]
+    self.known_condition = responses[:known_condition]
+    self.borough = responses[:borough]
+  end
 
   def update_call_started_at
     self.call_started_at = Time.now.utc
