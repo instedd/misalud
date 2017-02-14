@@ -14,11 +14,11 @@ class MessageProcessor
     when "pending_seen"
       respond_to do |r|
         r.yes {
-          update "pending_clinic", { "seen" => true }
+          update "pending_clinic", { "survey_was_seen" => true }
           send_sms clinic_options
         }
         r.no {
-          update "pending_reason_not_seen", { "seen" => false }
+          update "pending_reason_not_seen", { "survey_was_seen" => false }
           send_sms I18n.t("survey.why_not_seen")
         }
         r.otherwise {
@@ -28,7 +28,7 @@ class MessageProcessor
     when "pending_clinic"
       respond_to do |r|
         r.digit(1,3) { |d|
-          update "pending_satisfaction", { "clinic" => d }
+          update "pending_satisfaction", { "survey_chosen_clinic_id" => @contact.clinic(d).try(:id) }
           send_sms I18n.t('survey.ask_satisfaction')
         }
         r.otherwise {
@@ -38,7 +38,7 @@ class MessageProcessor
     when "pending_satisfaction"
       respond_to do |r|
         r.digit(1,5) { |d|
-          update "pending_can_be_called", { "satisfaction" => d }
+          update "pending_can_be_called", { "survey_clinic_rating" => d }
           send_sms I18n.t('survey.can_we_call_later')
         }
         r.otherwise {
@@ -48,11 +48,11 @@ class MessageProcessor
     when "pending_can_be_called"
       respond_to do |r|
         r.yes {
-          update "done", { "can_be_called" => true }
+          update "done", { "survey_can_be_called" => true }
           send_sms I18n.t('survey.thanks')
         }
         r.no {
-          update "done", { "can_be_called" => false }
+          update "done", { "survey_can_be_called" => false }
           send_sms I18n.t('survey.thanks')
         }
         r.otherwise {
@@ -62,11 +62,11 @@ class MessageProcessor
     when "pending_reason_not_seen"
       respond_to do |r|
         r.digit(1,3) { |d|
-          update "pending_can_be_called", { "reason_not_seen" => NOT_SEEN_REASON[d] }
+          update "pending_can_be_called", { "survey_reason_not_seen" => NOT_SEEN_REASON[d] }
           send_sms I18n.t('survey.can_we_call_later')
         }
         r.digit(4,4) { |d|
-          update "pending_clinic_not_seen", { "reason_not_seen" => NOT_SEEN_REASON[d] }
+          update "pending_clinic_not_seen", { "survey_reason_not_seen" => NOT_SEEN_REASON[d] }
           send_sms clinic_options
         }
         r.otherwise {
@@ -76,7 +76,7 @@ class MessageProcessor
     when "pending_clinic_not_seen"
       respond_to do |r|
         r.digit(1,3) { |d|
-          update "pending_can_be_called", { "clinic" => d }
+          update "pending_can_be_called", { "survey_chosen_clinic_id" => @contact.clinic(d).try(:id) }
           send_sms I18n.t('survey.can_we_call_later')
         }
         r.otherwise {
@@ -90,12 +90,12 @@ class MessageProcessor
 
   def start_survey(phone)
     contact = Contact.find_or_initialize_by(phone: phone) do |contact|
-      # values for fresh contacts, should not happen actually
+      # Values for fresh contacts, should not happen actually
       contact.tracking_status = "sms_info"
     end
 
     contact.survey_status = "pending_seen"
-    contact.survey_data = {}
+    contact.clear_survey_data
     contact.save!
 
     @channel.send_sms(phone, I18n.t('survey.start_message', locale: contact.language || 'en'))
@@ -132,7 +132,6 @@ class MessageProcessor
 
   def update(next_status, data)
     @contact.survey_status = next_status
-    @contact.survey_data = @contact.survey_data.merge(data)
-    @contact.save!
+    @contact.update_attributes!(data)
   end
 end

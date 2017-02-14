@@ -1,9 +1,10 @@
 class Contact < ApplicationRecord
-  serialize :survey_data, JSON
 
   belongs_to :clinic1, class_name: Clinic, required: false
   belongs_to :clinic2, class_name: Clinic, required: false
   belongs_to :clinic3, class_name: Clinic, required: false
+
+  belongs_to :survey_chosen_clinic, class_name: Clinic, required: false
 
   TRACKING_STATUS = %w(call_started hung_up voice_info sms_info followed_up)
   validates :tracking_status, inclusion: { in: TRACKING_STATUS, message: "\"%{value}\" is not valid" }
@@ -11,7 +12,6 @@ class Contact < ApplicationRecord
   before_save :update_call_started_at, if: -> (contact) {
     contact.tracking_status_changed? && contact.tracking_status == "call_started"
   }
-  before_save :ensure_survey_data
 
   def pick_clinics(clinic_filter = {})
     set_responses(clinic_filter) unless clinic_filter.blank?
@@ -27,6 +27,22 @@ class Contact < ApplicationRecord
     [self.clinic1, self.clinic2, self.clinic3].compact
   end
 
+  def clinic(index)
+    case index.to_i
+    when 1 then clinic1
+    when 2 then clinic2
+    when 3 then clinic3
+    end
+  end
+
+  def clear_survey_data
+    self.survey_was_seen = nil
+    self.survey_chosen_clinic_id = nil
+    self.survey_clinic_rating = nil
+    self.survey_can_be_called = nil
+    self.survey_reason_not_seen = nil
+  end
+
   private
 
   def set_responses(responses)
@@ -39,9 +55,5 @@ class Contact < ApplicationRecord
 
   def update_call_started_at
     self.call_started_at = Time.now.utc
-  end
-
-  def ensure_survey_data
-    self.survey_data ||= {}
   end
 end

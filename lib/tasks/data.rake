@@ -31,13 +31,11 @@ namespace :data do
       contact.language = (i % 2 == 0 ? "en" : "es")
       contact.sms_requested = (i % 7 != 0)
       contact.call_started_at = (rand(10)+1).days.ago
-      contact.survey_data = {
-        "reason_not_seen" => MessageProcessor::NOT_SEEN_REASON.values.sample,
-        "seen" => [true, false].sample,
-        "clinic" => rand(3) + 1,
-        "can_be_called" => [true, false].sample,
-        "satisfaction" => rand(5) + 1
-      } if (i % 8 != 0)
+      contact.survey_reason_not_seen = MessageProcessor::NOT_SEEN_REASON.values.sample
+      contact.survey_was_seen = [true, false].sample
+      contact.survey_chosen_clinic_id = clinics.sample.id
+      contact.survey_can_be_called = [true, false].sample
+      contact.survey_clinic_rating = rand(5) + 1
 
       contact.clinic1, contact.clinic2, contact.clinic3 = clinics.sample(3)
       contact.save!

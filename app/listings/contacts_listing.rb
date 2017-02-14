@@ -4,6 +4,7 @@ class ContactsListing < Listings::Base
   export :csv, :xls
 
   column :phone
+
   column :tracking_status, title: 'Status' do |contact, status|
     if format == :html
       status.humanize
@@ -11,6 +12,7 @@ class ContactsListing < Listings::Base
       status
     end
   end
+
   column :call_started_at
 
   column :survey_status do |contact, status|
@@ -20,21 +22,19 @@ class ContactsListing < Listings::Base
       status
     end
   end
-  column 'Can be called?' do |c|
-    c.survey_data["can_be_called"]
+
+  column :survey_can_be_called, title: 'Can be called?'
+  column :survey_was_seen, title: 'Seen?'
+  column survey_chosen_clinic: :name, title: 'Clinic'
+  column :survey_clinic_rating, title: 'Satisfaction'
+  column :survey_reason_not_seen, title: 'Reason' do |contact, reason|
+    if format == :html
+      reason.try &:humanize
+    else
+      reason
+    end
   end
-  column 'Seen?' do |c|
-    c.survey_data["seen"]
-  end
-  column 'Clinic' do |c|
-    c.survey_data["clinic"]
-  end
-  column 'Satisfaction' do |c|
-    c.survey_data["satisfaction"]
-  end
-  column 'Reason' do |c|
-    c.survey_data["reason_not_seen"]
-  end
+
   column do |c|
     if format == :html
       link_to raw('<i class="material-icons dp48">replay</i>'), start_survey_contact_path(c.id), method: :post, class: "waves-effect waves-teal btn-flat tooltipped", data: { position: 'bottom', tooltip: "Restart survey" }

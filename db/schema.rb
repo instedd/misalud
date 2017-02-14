@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170214152105) do
+ActiveRecord::Schema.define(version: 20170214215004) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,9 +35,8 @@ ActiveRecord::Schema.define(version: 20170214152105) do
   create_table "contacts", force: :cascade do |t|
     t.string   "phone"
     t.string   "survey_status"
-    t.text     "survey_data"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
     t.integer  "clinic1_id"
     t.integer  "clinic2_id"
     t.integer  "clinic3_id"
@@ -50,6 +49,11 @@ ActiveRecord::Schema.define(version: 20170214152105) do
     t.string   "borough"
     t.string   "language"
     t.boolean  "sms_requested"
+    t.boolean  "survey_was_seen"
+    t.integer  "survey_chosen_clinic_id"
+    t.integer  "survey_clinic_rating"
+    t.boolean  "survey_can_be_called"
+    t.string   "survey_reason_not_seen"
     t.index ["clinic1_id"], name: "index_contacts_on_clinic1_id", using: :btree
     t.index ["clinic2_id"], name: "index_contacts_on_clinic2_id", using: :btree
     t.index ["clinic3_id"], name: "index_contacts_on_clinic3_id", using: :btree

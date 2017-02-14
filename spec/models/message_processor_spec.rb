@@ -26,7 +26,8 @@ RSpec.describe MessageProcessor, type: :model do
       subject.start_survey(phone)
       contact = Contact.find_by(phone: phone)
       contact.survey_status = "lorem"
-      contact.survey_data = {a: 1}
+      contact.survey_was_seen = true
+      contact.survey_can_be_called = true
       contact.save!
 
       expect {
@@ -35,7 +36,8 @@ RSpec.describe MessageProcessor, type: :model do
 
       contact = Contact.find_by(phone: phone)
       expect(contact.survey_status).to eq("pending_seen")
-      expect(contact.survey_data).to eq({})
+      expect(contact.survey_was_seen).to be_nil
+      expect(contact.survey_can_be_called).to be_nil
     end
 
     it "should send message to channel" do
@@ -59,7 +61,8 @@ RSpec.describe MessageProcessor, type: :model do
   end
 
   describe "survey tracking" do
-    let(:phone) { "465789" }
+    let!(:phone)   { "465789" }
+    let!(:contact) { Contact.create!(phone: phone, tracking_status: 'sms_info', language: 'en', clinic1: Clinic.all[0], clinic2: Clinic.all[1]) }
 
     it "should track responses (seen)" do
       allow(channel).to receive(:send_sms)
@@ -71,12 +74,10 @@ RSpec.describe MessageProcessor, type: :model do
       subject.accept phone, "no"
 
       contact = Contact.find_by(phone: phone)
-      expect(contact.survey_data).to eq({
-        "seen" => true,
-        "clinic" => 2,
-        "satisfaction" => 5,
-        "can_be_called" => false
-      })
+      expect(contact.survey_was_seen).to eq(true)
+      expect(contact.survey_chosen_clinic_id).to eq(Clinic.all[1].id)
+      expect(contact.survey_clinic_rating).to eq(5)
+      expect(contact.survey_can_be_called).to eq(false)
     end
 
     it "should track responses (rejected)" do
@@ -89,12 +90,10 @@ RSpec.describe MessageProcessor, type: :model do
       subject.accept phone, "yes"
 
       contact = Contact.find_by(phone: phone)
-      expect(contact.survey_data).to eq({
-        "seen" => false,
-        "clinic" => 1,
-        "reason_not_seen" => "rejected",
-        "can_be_called" => true
-      })
+      expect(contact.survey_was_seen).to eq(false)
+      expect(contact.survey_chosen_clinic_id).to eq(Clinic.all[0].id)
+      expect(contact.survey_reason_not_seen).to eq("rejected")
+      expect(contact.survey_can_be_called).to eq(true)
     end
 
     it "should track responses (cost)" do
@@ -106,11 +105,10 @@ RSpec.describe MessageProcessor, type: :model do
       subject.accept phone, "yes"
 
       contact = Contact.find_by(phone: phone)
-      expect(contact.survey_data).to eq({
-        "seen" => false,
-        "reason_not_seen" => "cost",
-        "can_be_called" => true
-      })
+      expect(contact.survey_was_seen).to eq(false)
+      expect(contact.survey_chosen_clinic_id).to be_nil
+      expect(contact.survey_reason_not_seen).to eq("cost")
+      expect(contact.survey_can_be_called).to eq(true)
     end
 
   end
