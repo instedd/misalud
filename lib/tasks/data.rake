@@ -36,6 +36,11 @@ namespace :data do
       contact.survey_chosen_clinic_id = clinics.sample.id
       contact.survey_can_be_called = [true, false].sample
       contact.survey_clinic_rating = rand(5) + 1
+      contact.survey_status = case i % 9
+      when 0,1,2 then 'pending_seen'
+      when 3,4 then 'pending_clinic'
+      when 5 then 'done'
+      end
 
       contact.clinic1, contact.clinic2, contact.clinic3 = clinics.sample(3)
       contact.save!

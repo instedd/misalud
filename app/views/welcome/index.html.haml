@@ -22,3 +22,30 @@
             %label{for: "phone"} Phone number
       .card-action
         %button.btn.waves-effect.waves-light{type: "submit"} Start
+
+.row
+  .col.s12.m6
+    .card
+      .card-content
+        %span.card-title
+          Calls stats
+        %p
+          %ul.collection
+            %li.collection-item
+              Total calls received:
+              = @received_calls
+            %li.collection-item
+              Incomplete calls:
+              = @hang_ups
+            %li.collection-item
+              Successful calls:
+              = @completed_calls
+            %li.collection-item
+              Info SMSs sent:
+              = @sms_sent
+            %li.collection-item
+              Surveys started:
+              = @surveys_started
+            %li.collection-item
+              Surveys completed:
+              = @surveys_completed
