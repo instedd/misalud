@@ -41,6 +41,14 @@ namespace :data do
       contact.save!
     end
 
+    # Update clinic ratings
+    Clinic.all.each do |clinic|
+      clinic.selected_times = Contact.where(clinic1_id: clinic.id).or(Contact.where(clinic2_id: clinic.id)).or(Contact.where(clinic3_id: clinic.id)).count
+      clinic.rated_times = clinic.raters.count
+      clinic.avg_rating = clinic.raters.pluck(:survey_clinic_rating).sum / clinic.rated_times.to_f if clinic.rated_times > 0
+      clinic.save!
+    end
+
     puts "Done!"
   end
 end

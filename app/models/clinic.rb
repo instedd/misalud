@@ -1,11 +1,25 @@
 class Clinic < ApplicationRecord
 
+  has_many :raters, class_name: "Contact", foreign_key: "survey_chosen_clinic_id"
+
   def display_name
     name.presence || short_name
   end
 
   def borough_label
     Borough[self.borough].try(:label)
+  end
+
+  def add_rating!(rating)
+    with_lock do
+      self.avg_rating = if rated_times == 0
+        rating
+      else
+        (avg_rating * rated_times + rating).to_f / (rated_times + 1)
+      end
+      self.rated_times += 1
+      save!
+    end
   end
 
   def self.import
@@ -30,6 +44,7 @@ class Clinic < ApplicationRecord
     clinic.longitude ||= attributes["longitude"]
 
     clinic.save!
+    clinic
   end
 
   def self.pick(filter = {})

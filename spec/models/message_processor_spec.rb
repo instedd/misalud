@@ -3,8 +3,9 @@ require 'rails_helper'
 RSpec.describe MessageProcessor, type: :model do
   let(:channel) { double("fake_sms_channel") }
   let(:subject) { MessageProcessor.new(channel) }
-  before(:each) do
-    (1..3).each do |i|
+
+  (1..3).each do |i|
+    let!("clinic#{i}") do
       Clinic.import_clinic i, {"name" => "Name #{i}"}
     end
   end
@@ -62,7 +63,7 @@ RSpec.describe MessageProcessor, type: :model do
 
   describe "survey tracking" do
     let!(:phone)   { "465789" }
-    let!(:contact) { Contact.create!(phone: phone, tracking_status: 'sms_info', language: 'en', clinic1: Clinic.all[0], clinic2: Clinic.all[1]) }
+    let!(:contact) { Contact.create!(phone: phone, tracking_status: 'sms_info', language: 'en', clinic1: clinic1, clinic2: clinic2) }
 
     it "should track responses (seen)" do
       allow(channel).to receive(:send_sms)
@@ -75,7 +76,7 @@ RSpec.describe MessageProcessor, type: :model do
 
       contact = Contact.find_by(phone: phone)
       expect(contact.survey_was_seen).to eq(true)
-      expect(contact.survey_chosen_clinic_id).to eq(Clinic.all[1].id)
+      expect(contact.survey_chosen_clinic_id).to eq(clinic2.id)
       expect(contact.survey_clinic_rating).to eq(5)
       expect(contact.survey_can_be_called).to eq(false)
     end
@@ -91,7 +92,7 @@ RSpec.describe MessageProcessor, type: :model do
 
       contact = Contact.find_by(phone: phone)
       expect(contact.survey_was_seen).to eq(false)
-      expect(contact.survey_chosen_clinic_id).to eq(Clinic.all[0].id)
+      expect(contact.survey_chosen_clinic_id).to eq(clinic1.id)
       expect(contact.survey_reason_not_seen).to eq("rejected")
       expect(contact.survey_can_be_called).to eq(true)
     end
@@ -114,7 +115,7 @@ RSpec.describe MessageProcessor, type: :model do
   end
 
   describe "survey answers" do
-    let(:contact) { Contact.create!(phone: "465789", tracking_status: 'sms_info', language: 'en', clinic1: Clinic.all[0], clinic2: Clinic.all[1]) }
+    let(:contact) { Contact.create!(phone: "465789", tracking_status: 'sms_info', language: 'en', clinic1: clinic1, clinic2: clinic2) }
 
     it "should send answers via channel" do
       expect(channel).to receive(:send_sms).with(contact.phone, I18n.t('survey.start_message', locale: 'en'))
@@ -150,6 +151,39 @@ RSpec.describe MessageProcessor, type: :model do
 
       expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.thanks', locale: 'es')}")
       subject.accept contact.phone, "no"
+    end
+  end
+
+  describe "side effects" do
+    let!(:contact) { Contact.create!(phone: "9991000", tracking_status: 'sms_info', language: 'en', clinic1: clinic1, clinic2: clinic2) }
+
+    it "should set first rating for clinic" do
+      allow(channel).to receive(:send_sms)
+
+      phone = contact.phone
+      subject.start_survey(phone)
+      subject.accept phone, "yes"
+      subject.accept phone, "2"
+      subject.accept phone, "4"
+      subject.accept phone, "no"
+
+      expect(clinic2.reload.avg_rating).to eq(4)
+      expect(clinic2.rated_times).to eq(1)
+    end
+
+    it "should update rating for clinic" do
+      clinic2.update_attributes!(avg_rating: 3.5, rated_times: 6)
+      allow(channel).to receive(:send_sms)
+
+      phone = contact.phone
+      subject.start_survey(phone)
+      subject.accept phone, "yes"
+      subject.accept phone, "2"
+      subject.accept phone, "4"
+      subject.accept phone, "no"
+
+      expect(clinic2.reload.avg_rating).to be_within(0.001).of((3.5 * 6 + 4) / 7)
+      expect(clinic2.rated_times).to eq(7)
     end
   end
 end

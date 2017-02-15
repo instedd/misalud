@@ -39,6 +39,7 @@ class MessageProcessor
       respond_to do |r|
         r.digit(1,5) { |d|
           update "pending_can_be_called", { "survey_clinic_rating" => d }
+          update_clinic_rating d
           send_sms I18n.t('survey.can_we_call_later')
         }
         r.otherwise {
@@ -133,5 +134,9 @@ class MessageProcessor
   def update(next_status, data)
     @contact.survey_status = next_status
     @contact.update_attributes!(data)
+  end
+
+  def update_clinic_rating(rating)
+    @contact.survey_chosen_clinic.add_rating!(rating)
   end
 end
