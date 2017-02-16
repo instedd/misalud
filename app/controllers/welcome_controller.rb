@@ -8,6 +8,11 @@ class WelcomeController < ApplicationController
     @surveys_completed = Contact.where(survey_status: 'done').count
   end
 
+  def map
+    @clinics = Clinic.all
+    gon.clinics = @clinics
+  end
+
   def start_survey
     phone = SmsChannel.clean_phone(params[:phone])
     MessageProcessor.new(SmsChannel.new).start_survey(phone)

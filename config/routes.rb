@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   mount Listings::Engine => "/listings"
 
   root to: 'welcome#index'
+  get '/map', to: 'welcome#map'
+
   post 'start_survey', to: 'welcome#start_survey'
 
   post 'twilio/sms'

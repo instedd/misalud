@@ -43,6 +43,12 @@ gem 'alto_guisso', github: "instedd/alto_guisso", branch: 'master'
 gem 'resource_map_api_client', github: "instedd/ruby-resource_map_api_client", branch: 'master'
 
 gem 'materialize-sass'
+gem 'gon'
+
+source 'https://rails-assets.org' do
+  gem 'rails-assets-leaflet'
+  gem 'rails-assets-lodash'
+end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
