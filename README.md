@@ -9,31 +9,31 @@ MiSalud pilot project for Doctors of the World NYC.
 Instructions for setting up a develipment environment.
 
 1. Install ruby 2.4.0. If using rbenv, run:
-```bash
-$ rbenv install 2.4.0
-$ rbenv shell 2.4.0
-$ gem install bundler
-```
+    ```bash
+    $ rbenv install 2.4.0
+    $ rbenv shell 2.4.0
+    $ gem install bundler
+    ```
 
 2. Install project dependencies
-```bash
-$ bundle install --path=.bundle
-```
+    ```bash
+    $ bundle install --path=.bundle
+    ```
 
 3. Create MySQL database
-```bash
-$ bundle exec rake db:setup
-```
+    ```bash
+    $ bundle exec rake db:setup
+    ```
 
 4. Optionally create fake data
-```bash
-$ bundle exec rake data:fake
-```
+    ```bash
+    $ bundle exec rake data:fake
+    ```
 
 5. Start the server and open a browser at `localhost:3000`
-```bash
-$ bundle exec rails server
-```
+    ```bash
+    $ bundle exec rails server
+    ```
 
 ## Twilio configuration
 
