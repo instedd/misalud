@@ -6,7 +6,7 @@ MiSalud pilot project for Doctors of the World NYC.
 
 ## Development setup
 
-Instructions for setting up a develipment environment.
+Instructions for setting up a development environment.
 
 1. Install ruby 2.4.0. If using rbenv, run:
     ```bash
