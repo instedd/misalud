@@ -12,18 +12,17 @@
     %nav
       .nav-wrapper
         = link_to '/', class: 'brand-logo' do
-          = image_tag 'mi-salud.svg'
+          = image_tag 'mi-salud.svg', width: '42px', height: '42px'
           %span Mi Salud
-        %ul#nav-mobile.right.hide-on-med-and-down
+        %ul
           %li= link_to 'Dashboard', root_path
           %li= link_to 'Clinics', clinics_path
           %li= link_to 'Contacts', '/contacts'
 
     %main
-      .container
-        = yield
+      = yield
 
-    %footer.page-footer
+    %footer
       .footer-copyright
-        .container
-          = image_tag 'doctors-of-the-world.svg'
+        = image_tag 'doctors-of-the-world.svg', width: '48px', height: '48px'
+        %span &copy; 2017
