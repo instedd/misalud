@@ -16,10 +16,10 @@
           = image_tag 'mi-salud.svg', width: '42px', height: '42px'
           %span Mi Salud
         %ul
-          %li= link_to 'Dashboard', root_path
-          %li= link_to 'Map', '/map'
-          %li= link_to 'Clinics', clinics_path
-          %li= link_to 'Contacts', contacts_path
+          = nav_link 'Dashboard', root_path, controller_name == 'welcome' && action_name == 'index'
+          = nav_link 'Map', '/map', controller_name == 'welcome' && action_name == 'map'
+          = nav_link 'Clinics', clinics_path, controller_name == 'clinics'
+          = nav_link 'Contacts', contacts_path, controller_name == 'contacts'
 
     %main
       = yield
