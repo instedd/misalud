@@ -154,6 +154,13 @@ RSpec.describe ServicesController, type: :controller do
       expect(variables["clinic3"]).to eq("Clinic 3, ADDRESS3, Manhattan")
     end
 
-  end
+    it "tracks contact as sms_info requested" do
+      contact = Contact.create!(phone: "9991000", call_sid: 100, urgent: true, tracking_status: "voice_info", clinic1: clinic1, clinic2: clinic2, clinic3: clinic3)
 
+      get :get_clinics, params: { CallSid: 100 }
+
+      expect(contact.reload.tracking_status).to eq("sms_info")
+    end
+
+  end
 end

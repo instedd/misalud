@@ -42,6 +42,8 @@ class ServicesController < ApplicationController
 
   def get_clinics
     @contact = Contact.find_by(call_sid: params[:CallSid])
+    @contact.tracking_status = "sms_info"
+    @contact.save!
 
     variables = {}
     @contact.clinics.each_with_index do |clinic, index|
