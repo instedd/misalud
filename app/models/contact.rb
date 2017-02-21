@@ -13,6 +13,10 @@ class Contact < ApplicationRecord
     contact.tracking_status_changed? && contact.tracking_status == "call_started"
   }
 
+  def self.find_or_initialize_by_phone(phone)
+    Contact.find_or_initialize_by(phone: SmsChannel.clean_phone(phone))
+  end
+
   def pick_clinics(clinic_filter = {})
     set_responses(clinic_filter) unless clinic_filter.blank?
     c1, c2, c3 = Clinic.pick(clinic_filter)

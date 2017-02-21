@@ -56,7 +56,7 @@ class ServicesController < ApplicationController
   end
 
   def track_contact
-    contact = Contact.find_or_initialize_by(phone: params[:phone_number])
+    contact = Contact.find_or_initialize_by_phone(params[:phone_number])
     contact.tracking_status = params[:tracking_status]
     contact.save!
 
@@ -65,7 +65,7 @@ class ServicesController < ApplicationController
 
   def status_callback
     # TODO: Should we find_or_initialize_by CallSid?
-    contact = Contact.find_or_initialize_by(phone: params[:From])
+    contact = Contact.find_or_initialize_by_phone(params[:From])
 
     case params[:CallStatus]
     when "in-progress"
