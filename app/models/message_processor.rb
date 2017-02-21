@@ -49,11 +49,11 @@ class MessageProcessor
     when "pending_can_be_called"
       respond_to do |r|
         r.yes {
-          update "done", { "survey_can_be_called" => true }
+          update "done", { "survey_can_be_called" => true, "tracking_status" => "followed_up" }
           send_sms I18n.t('survey.thanks')
         }
         r.no {
-          update "done", { "survey_can_be_called" => false }
+          update "done", { "survey_can_be_called" => false, "tracking_status" => "followed_up" }
           send_sms I18n.t('survey.thanks')
         }
         r.otherwise {
@@ -90,13 +90,15 @@ class MessageProcessor
   end
 
   def start_survey(phone)
-    contact = Contact.find_or_initialize_by(phone: phone) do |contact|
+    contact = Contact.find_or_initialize_by_phone(phone)
+    unless contact.persisted?
       # Values for fresh contacts, should not happen actually
       contact.tracking_status = "sms_info"
     end
 
-    contact.survey_status = "pending_seen"
     contact.clear_survey_data
+    contact.survey_status = "pending_seen"
+    contact.survey_updated_at = Time.now.utc
     contact.save!
 
     @channel.send_sms(phone, I18n.t('survey.start_message', locale: contact.language || 'en'))
@@ -133,6 +135,7 @@ class MessageProcessor
 
   def update(next_status, data)
     @contact.survey_status = next_status
+    @contact.survey_updated_at = Time.now.utc
     @contact.update_attributes!(data)
   end
 

@@ -71,6 +71,7 @@ class ServicesController < ApplicationController
     when "in-progress"
       contact.call_sid = params[:CallSid]
       contact.tracking_status = "call_started"
+      contact.clear_survey_data
       contact.save!
     when "failed"
       contact.tracking_status = "hung_up"
@@ -78,6 +79,7 @@ class ServicesController < ApplicationController
     when "completed"
       contact.tracking_status = params[:sendsms] == "1" ? "sms_info" : "voice_info"
       contact.save!
+      contact.schedule_survey!
     end
 
     head :ok

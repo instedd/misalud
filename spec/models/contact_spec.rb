@@ -33,4 +33,31 @@ RSpec.describe Contact, type: :model do
       end
     end
   end
+
+  describe "#schedule_survey!" do
+    let(:contact) { Contact.create! tracking_status: 'sms_info' }
+
+    it "should schedule in a week for pregnant" do
+      contact.pregnant = true
+      contact.save!
+      contact.schedule_survey!
+      expect(contact.survey_scheduled_at).to be_within(1.minute).of(Time.now.utc + 1.week)
+    end
+
+    it "should schedule in a week for urgent" do
+      contact.pregnant = false
+      contact.urgent = true
+      contact.save!
+      contact.schedule_survey!
+      expect(contact.survey_scheduled_at).to be_within(1.minute).of(Time.now.utc + 1.week)
+    end
+
+    it "should schedule in a month for non urgent" do
+      contact.pregnant = false
+      contact.urgent = false
+      contact.save!
+      contact.schedule_survey!
+      expect(contact.survey_scheduled_at).to be_within(1.minute).of(Time.now.utc + 1.month)
+    end
+  end
 end

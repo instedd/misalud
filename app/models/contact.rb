@@ -39,7 +39,21 @@ class Contact < ApplicationRecord
     end
   end
 
+  def schedule_survey!
+    timespan = if self.pregnant || self.urgent
+      1.week
+    else
+      1.month
+    end
+    self.survey_scheduled_at = Time.now.utc + timespan
+    self.clear_survey_data
+    self.save!
+  end
+
   def clear_survey_data
+    self.survey_status = nil
+    self.survey_updated_at = nil
+
     self.survey_was_seen = nil
     self.survey_chosen_clinic_id = nil
     self.survey_clinic_rating = nil

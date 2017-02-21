@@ -45,8 +45,19 @@
               Sms info:
               = @sms_info
             %li.collection-item
-              Surveys started:
-              = @surveys_started
+              Followed up:
+              = @followed_up
+
+        %span.card-title
+          Survey stats
+        %p
+          %ul.collection
             %li.collection-item
-              Surveys completed:
-              = @surveys_completed
+              Surveys scheduled:
+              = @surveys_scheduled
+            %li.collection-item
+              Surveys ongoing:
+              = @surveys_ongoing
+            %li.collection-item
+              Surveys stalled:
+              = @surveys_stalled

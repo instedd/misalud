@@ -23,6 +23,7 @@ class ContactsListing < Listings::Base
     end
   end
 
+  column :survey_scheduled_at
   column :survey_can_be_called, title: 'Can be called?'
   column :survey_was_seen, title: 'Seen?'
   column survey_chosen_clinic: :name, title: 'Clinic'
