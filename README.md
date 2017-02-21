@@ -43,5 +43,19 @@ Run the following with your public address to setup the webhook.
 
 ```
 $ bundle exec rails c
-irb(main):003:0> SmsChannel.new.config_webhook "http://99e8e942.ngrok.io/twilio/sms"
+irb(main):003:0> SmsChannel.new.config_webhook "http://PUBLIC_ADDRESS/twilio/sms"
 ```
+
+## Verboice configuration
+
+Write verboice project information in `config/settings(.local).yml`.
+
+In verboice project settings set the "Status callback" to `http://PUBLIC_ADDRESS/services/status-callback`.
+
+In verboice external services use the manifest at `http://PUBLIC_ADDRESS/verboice.xml`.
+
+## Resourcemap configuration
+
+Write resourcemap collection information in `config/settings(.local).yml`.
+
+
