@@ -1,5 +1,6 @@
 $(function() {
   var clinics = gon.clinics;
+  if ($('#clinics-map').size() == 0) return;
 
   // Setup map
   var map = L.map('clinics-map').setView([40.7128, -74.0059], 13);
