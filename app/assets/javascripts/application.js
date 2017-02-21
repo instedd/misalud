@@ -17,3 +17,7 @@
 //= require listings
 //= require leaflet
 //= require_tree .
+
+$(function(){
+  $(".tooltiped").tooltip({delay: 50});
+});

@@ -13,7 +13,11 @@ Rails.application.routes.draw do
   match "services/track-contact", to: "services#track_contact", via: [:get, :post]
   match "services/status-callback", to: "services#status_callback", via: [:get, :post]
 
-  resources :clinics, only: :index
+  resources :clinics, only: :index do
+    collection do
+      post :sync
+    end
+  end
 
   resources :contacts, only: :index do
     member do

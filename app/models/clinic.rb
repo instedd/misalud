@@ -24,6 +24,7 @@ class Clinic < ApplicationRecord
 
   def self.import
     Resmap.new.import_sites { |site| import_clinic(site.id, site.properties.merge("name" => site.name, "latitude" => site.lat, "longitude" => site.long)) }
+    # TODO mark sites as removed from resmap
   end
 
   def self.import_clinic(resmap_id, attributes)
