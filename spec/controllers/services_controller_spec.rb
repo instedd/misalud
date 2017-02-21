@@ -43,6 +43,32 @@ RSpec.describe ServicesController, type: :controller do
       expect(contact.known_condition).to eq(false)
       expect(contact.language).to eq("es")
     end
+
+    it "returns message for no clinics" do
+      get :find_clinic, params: {
+        "CallSid" => 100,
+        "lang" => "es",
+        "pregnancy" => CallFlowResponses::NOT_PREGNANT,
+        "when" => CallFlowResponses::WHEN_URGENT,
+        "where" => "5",
+        "knowncondition" => CallFlowResponses::NO_KNOWN_CONDITION
+      }
+
+      found_contact = assigns(:contact)
+      expect(found_contact).to eq(contact)
+
+      actual_clinics = assigns(:clinics)
+      expect(actual_clinics.size).to eq(0)
+
+      expect(response).to have_http_status(:success)
+      expect(response.body).to include("#{I18n.t('no_clinics_found', locale: 'es')}")
+
+      expect(contact.reload.pregnant).to eq(false)
+      expect(contact.urgent).to eq(true)
+      expect(contact.borough).to eq("staten_island")
+      expect(contact.known_condition).to eq(false)
+      expect(contact.language).to eq("es")
+    end
   end
 
   describe "POST #track_contact" do

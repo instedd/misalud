@@ -22,15 +22,16 @@ class ServicesController < ApplicationController
     @clinics = @contact.pick_clinics(opts)
 
     if @clinics.empty?
-      text = to_say_node(I18n.t(:no_clinics_found, locale: params[:lang]))
+      text = t_to_say_node(:no_clinics_found)
       render xml: "<Response>#{text}</Response>"
+      return
     end
 
     # Build response text: clinics names are to be read in English, and the rest in the user's locale
-    nodes = [ to_say_node(I18n.t(:you_can_go_to, locale: params[:lang]), params[:lang]) ]
+    nodes = [ t_to_say_node(:you_can_go_to) ]
     @clinics.each_with_index do |clinic, index|
       if (index == @clinics.size - 1) && (@clinics.size > 1)
-        nodes << to_say_node(I18n.t(:or, locale: params[:lang]), params[:lang])
+        nodes << t_to_say_node(:or)
         nodes << to_say_node(clinic.short_name, "en")
       else
         nodes << to_say_node("#{clinic.short_name}, ", "en")
@@ -88,5 +89,9 @@ class ServicesController < ApplicationController
 
   def to_say_node(text, lang)
     "<Say language=\"#{lang}\">#{text}</Say>"
+  end
+
+  def t_to_say_node(key)
+    to_say_node(I18n.t(key, locale: params[:lang]), params[:lang])
   end
 end
