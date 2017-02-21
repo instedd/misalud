@@ -12,7 +12,7 @@ class MessageResponder
   end
 
   def yes(&block)
-    @blocks << [/yes/i, block]
+    @blocks << [/yes|si|sí/i, block]
   end
 
   def no(&block)

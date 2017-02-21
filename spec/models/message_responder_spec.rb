@@ -42,6 +42,10 @@ RSpec.describe MessageResponder, type: :model do
   it { expect(is_a_yes?("Yes")).to eq(true) }
   it { expect(is_a_yes?("   YES   ")).to eq(true) }
   it { expect(is_a_yes?("   no   ")).to eq(false) }
+  it { expect(is_a_yes?("si")).to eq(true) }
+  it { expect(is_a_yes?("Sí. ")).to eq(true) }
+  it { expect(is_a_yes?("   SI   ")).to eq(true) }
+  it { expect(is_a_yes?("   SÍ   ")).to eq(true) }
 
   it { expect(is_a_no?("no")).to eq(true) }
   it { expect(is_a_no?("No")).to eq(true) }
@@ -57,6 +61,7 @@ RSpec.describe MessageResponder, type: :model do
 
   it { expect(is_otherwise?("foo")).to eq(true) }
   it { expect(is_otherwise?("yes")).to eq(false) }
+  it { expect(is_otherwise?("si")).to eq(false) }
   it { expect(is_otherwise?("no")).to eq(false) }
   it { expect(is_otherwise?("4")).to eq(false) }
 end
