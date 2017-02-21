@@ -73,12 +73,10 @@ class ServicesController < ApplicationController
       contact.tracking_status = "call_started"
       contact.save!
     when "failed"
-      contact.sms_requested ||= (params[:sendsms] == "1")
       contact.tracking_status = "hung_up"
       contact.save!
     when "completed"
-      contact.sms_requested ||= (params[:sendsms] == "1")
-      contact.tracking_status = "voice_info"
+      contact.tracking_status = params[:sendsms] == "1" ? "sms_info" : "voice_info"
       contact.save!
     end
 

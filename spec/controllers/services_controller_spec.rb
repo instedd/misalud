@@ -146,6 +146,17 @@ RSpec.describe ServicesController, type: :controller do
 
       expect(contact.tracking_status).to eq("voice_info")
     end
+
+    it "marks as sms_info on completed with sendsms=1" do
+      post :status_callback, params: { CallStatus: "in-progress", From: phone, CallSid: call_sid }
+
+      expect {
+        post :status_callback, params: { CallStatus: "completed", From: phone }
+      }.to change(Contact, :count).by(0)
+      expect(response).to have_http_status(:success)
+
+      expect(contact.tracking_status).to eq("voice_info")
+    end
   end
 
   describe "GET #get_clinics" do
