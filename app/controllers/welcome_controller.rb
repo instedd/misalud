@@ -1,16 +1,14 @@
 class WelcomeController < ApplicationController
   def index
-    @inbound_calls = Contact.count
-    @hang_ups = Contact.where(tracking_status: 'hung_up').count
-    @voice_info = Contact.where(tracking_status: 'voice_info').count
-    @sms_info = Contact.where(tracking_status: 'sms_info').count
-    @followed_up = Contact.where(tracking_status: 'followed_up').count
+    @inbound_calls = Contact.inbound_calls.count
+    @hang_ups = Contact.hang_ups.count
+    @voice_info = Contact.voice_info.count
+    @sms_info = Contact.sms_info.count
+    @followed_up = Contact.followed_up.count
 
-
-    @surveys_scheduled = Contact.where("tracking_status <> 'followed_up' AND survey_status IS NULL AND survey_scheduled_at IS NOT NULL").count
-    surveys_ongoing_or_stalled = Contact.where("tracking_status <> 'followed_up' AND survey_status IS NOT NULL")
-    @surveys_ongoing = surveys_ongoing_or_stalled.where("survey_updated_at >= ?", 1.day.ago).count
-    @surveys_stalled = surveys_ongoing_or_stalled.where("survey_updated_at < ?", 1.day.ago).count
+    @surveys_scheduled = Contact.surveys_scheduled.count
+    @surveys_ongoing = Contact.surveys_ongoing.count
+    @surveys_stalled = Contact.surveys_stalled.count
   end
 
   def map

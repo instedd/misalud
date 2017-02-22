@@ -13,6 +13,19 @@ class Contact < ApplicationRecord
     contact.tracking_status_changed? && contact.tracking_status == "call_started"
   }
 
+  scope :inbound_calls, -> { all }
+  scope :hang_ups, -> { where(tracking_status: 'hung_up') }
+  scope :voice_info, -> { where(tracking_status: 'voice_info') }
+  scope :sms_info, -> { where(tracking_status: 'sms_info') }
+  scope :followed_up, -> { where(tracking_status: 'followed_up') }
+
+  scope :surveys_scheduled, -> { where("tracking_status <> 'followed_up' AND survey_status IS NULL AND survey_scheduled_at IS NOT NULL") }
+  scope :surveys_ongoing, -> { surveys_ongoing_or_stalled.where("survey_updated_at >= ?", 1.day.ago) }
+  scope :surveys_stalled, -> { surveys_ongoing_or_stalled.where("survey_updated_at < ?", 1.day.ago) }
+  scope :surveys_ongoing_or_stalled, -> { where("tracking_status <> 'followed_up' AND survey_status IS NOT NULL") }
+
+  scope :survey_ready_to_start, -> { surveys_scheduled.where("survey_scheduled_at <= ?", Time.now.utc) } # TODO add time window
+
   def self.find_or_initialize_by_phone(phone)
     Contact.find_or_initialize_by(phone: SmsChannel.clean_phone(phone))
   end
