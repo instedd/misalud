@@ -23,7 +23,7 @@ namespace :data do
     (0..50).each do |i|
       contact = Contact.find_or_initialize_by(call_sid: i+1)
       contact.phone = 9990000 + i
-      contact.tracking_status = "voice_info"
+      contact.tracking_status = %w(hung_up voice_info sms_info followed_up).sample
       contact.pregnant = (i % 5 == 0)
       contact.urgent = (i % 3 == 0)
       contact.known_condition = (i % 4 == 0)
