@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170221182902) do
+ActiveRecord::Schema.define(version: 20170223190312) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -32,6 +32,8 @@ ActiveRecord::Schema.define(version: 20170221182902) do
     t.string   "borough"
     t.integer  "rated_times",      default: 0
     t.float    "avg_rating"
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_clinics_on_deleted_at", using: :btree
   end
 
   create_table "contacts", force: :cascade do |t|

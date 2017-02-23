@@ -1,4 +1,5 @@
 class Clinic < ApplicationRecord
+  acts_as_paranoid without_default_scope: true
 
   has_many :raters, class_name: "Contact", foreign_key: "survey_chosen_clinic_id"
 
@@ -23,15 +24,21 @@ class Clinic < ApplicationRecord
   end
 
   def self.import
-    Resmap.new.import_sites { |site| import_clinic(site.id, site.properties.merge("name" => site.name, "latitude" => site.lat, "longitude" => site.long)) }
-    # TODO mark sites as removed from resmap
+    ids = Clinic.all.pluck(:id)
+    Resmap.new.import_sites do |site|
+      import_clinic(site.id, site.properties.merge("name" => site.name, "latitude" => site.lat, "longitude" => site.long), ids)
+    end
+    # ids hold all the ids that were not imported in resmap, hence should be soft deleted
+    ids.each { |id| Clinic.find(id).delete }
   end
 
-  def self.import_clinic(resmap_id, attributes)
+  def self.import_clinic(resmap_id, attributes, ids = nil)
     clinic = Clinic.find_or_initialize_by(resmap_id: resmap_id) do |clinic|
       # Values for fresh clinics
       clinic.selected_times = 0
     end
+
+    ids.delete(clinic.id) if ids
 
     clinic.name = attributes["name"]
     clinic.short_name = attributes["short_name"]
@@ -63,7 +70,7 @@ class Clinic < ApplicationRecord
   end
 
   def self.filtered(filter = {})
-    clinics = Clinic
+    clinics = Clinic.without_deleted
 
     # Disregard all other filters if it's women seeking care
     if filter[:pregnancy]

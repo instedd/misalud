@@ -12,7 +12,7 @@ class WelcomeController < ApplicationController
   end
 
   def map
-    @clinics = Clinic.all
+    @clinics = Clinic.without_deleted.all
     gon.clinics = @clinics
   end
 
