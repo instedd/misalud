@@ -29,12 +29,11 @@ namespace :data do
       contact.known_condition = (i % 4 == 0)
       contact.borough = Borough[(i % 5 + 1)].try(:name)
       contact.language = (i % 2 == 0 ? "en" : "es")
-      contact.sms_requested = (i % 7 != 0)
       contact.call_started_at = (rand(10)+1).days.ago
       contact.survey_reason_not_seen = MessageProcessor::NOT_SEEN_REASON.values.sample
-      contact.survey_was_seen = [true, false].sample
+      contact.survey_was_seen = [nil, true, false].sample
       contact.survey_chosen_clinic_id = clinics.sample.id
-      contact.survey_can_be_called = [true, false].sample
+      contact.survey_can_be_called = [nil, true, false].sample
       contact.survey_clinic_rating = rand(5) + 1
       contact.survey_status = case i % 9
       when 0,1,2 then 'pending_seen'
