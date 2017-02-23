@@ -100,6 +100,16 @@ footer {
   }
 }
 
+ul.dropdown-content {
+  li {
+    a {
+      @extend .grey-text;
+    }
+    &:hover a {
+      @extend .grey-text, .text-darken-2;
+    }
+  }
+}
 
 
 // ------- Card with Table ----------

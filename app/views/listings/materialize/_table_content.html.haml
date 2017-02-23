@@ -6,14 +6,12 @@
           =listing.items.total_count
           =listing.name
         - unless listing.export_formats.empty?
-          .fixed-action-btn.horizontal
-            %a.btn-floating.tooltipped{"data-position" => "top", "data-tooltip" => "Download as"}
-              %i.material-icons.grey-text file_download
-            %ul
-              / = listing.export_message
-              - listing.export_formats.each do |format|
-                %li
-                  = link_to format, listing.url_for_format(format), class: 'btn-floating flat', download: true
+          %a.dropdown-button.tooltipped.right{"data-activates" => "dropdown", "data-beloworigin" => "true", "data-hover" => "true", "data-position" => "top", "data-tooltip" => "Download as", :href => "#"}
+            %i.material-icons.grey-text file_download
+          %ul.dropdown-content#dropdown
+            - listing.export_formats.each do |format|
+              %li
+                = link_to format, listing.url_for_format(format), download: true
       .card-table
         %table.bordered.highlight{'class' => listing.table_css_class}
           %thead
