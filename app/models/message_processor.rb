@@ -4,6 +4,8 @@ class MessageProcessor
   end
 
   def accept(from, body)
+    old_locale = I18n.locale
+
     @contact = Contact.find_by(phone: from)
     return unless @contact
 
@@ -86,7 +88,7 @@ class MessageProcessor
       end
     end
   ensure
-    I18n.locale = "en"
+    I18n.locale = old_locale
   end
 
   def start_survey(phone)

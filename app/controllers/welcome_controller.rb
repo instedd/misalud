@@ -17,7 +17,7 @@ class WelcomeController < ApplicationController
   end
 
   def start_survey
-    MessageProcessor.new(SmsChannel.new).start_survey(params[:phone])
+    MessageProcessor.new(SmsChannel.build).start_survey(params[:phone])
     redirect_to root_path
   end
 end

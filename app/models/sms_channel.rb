@@ -1,4 +1,14 @@
 class SmsChannel
+  @@mock = nil
+
+  def self.returned=(mock)
+    @@mock = mock
+  end
+
+  def self.build
+    @@mock || SmsChannel.new
+  end
+
   def initialize
     @twilio_client = Twilio::REST::Client.new Settings.twilio.sid, Settings.twilio.token
   end
