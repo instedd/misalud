@@ -41,12 +41,6 @@ def start_surveys
   SurveyScheduler.run
 end
 
-class Integer
-  def later
-    Timecop.freeze(Time.now + self.seconds)
-  end
-end
-
 class FakeSmsChannel
   def initialize
     @messages = []

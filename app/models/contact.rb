@@ -24,7 +24,12 @@ class Contact < ApplicationRecord
   scope :surveys_stalled, -> { surveys_ongoing_or_stalled.where("survey_updated_at < ?", 1.day.ago) }
   scope :surveys_ongoing_or_stalled, -> { where("tracking_status <> 'followed_up' AND survey_status IS NOT NULL") }
 
-  scope :survey_ready_to_start, -> { surveys_scheduled.where("survey_scheduled_at <= ?", Time.now.utc) } # TODO add time window
+  scope :survey_ready_to_start, -> {
+    t = Time.now.utc
+    surveys_scheduled
+      .where("survey_scheduled_at <= ?", t)
+      .where("(EXTRACT(HOUR FROM survey_scheduled_at) * 60 + EXTRACT(MINUTES FROM survey_scheduled_at) + 15) >= ?", t.hour * 60 + t.min)
+  }
 
   def self.find_or_initialize_by_phone(phone)
     Contact.find_or_initialize_by(phone: SmsChannel.clean_phone(phone))
