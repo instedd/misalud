@@ -12,14 +12,15 @@ body {
   min-height: 100vh;
   flex-direction: column;
   > * {
-    padding-left: 3%;
-    padding-right: 3%;
+    padding-left: 2%;
+    padding-right: 2%;
   }
 }
 
 main {
   flex: 1 0 auto;
-  padding: 2rem 0 .5rem;
+  padding-top: 2rem;
+  padding-bottom: .5rem;
 }
 
 nav {
@@ -196,7 +197,7 @@ footer {
   }
 
   &.tableScroll {
-    width: 78.5vw;
+    width: 94.7vw;
     .card-table {
       overflow-x: auto;
       table {
@@ -213,21 +214,23 @@ footer {
   height: 600px;
 }
 
-@media #{$large-and-up} {
-  body > * {
-    padding-left: 10%;
-    padding-right: 10%;
-  }
-}
+// @media #{$large-and-up} {
+//   body > * {
+//     padding-left: 10%;
+//     padding-right: 10%;
+//   }
+// }
 
 @media #{$medium-and-down} {
   .card.tableScroll {
-    width: 96vw;
+    width: 94vw;
   }
 }
 
 @media #{$small-and-down} {
-  .card.tableScroll {
-    width: 94vw;
+
+  body > * {
+    padding-left: 1%;
+    padding-right: 1%;
   }
 }
