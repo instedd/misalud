@@ -46,10 +46,32 @@ nav {
       display: inline-block;
       height: 100%;
       li {
+        @extend .transparent;
+        opacity: 0.4;
+        position: relative;
+        transition: opacity ease-in .3s;
         a {
+          @extend .transparent;
           line-height: 90px;
           text-transform: uppercase;
           padding: 0 20px;
+        }
+        &:hover {
+          opacity: 0.6;
+        }
+        &.active {
+          opacity: 1;
+          &:after {
+            content: '';
+            @extend .white;
+            display: block;
+            border-radius: 50%;
+            width: 6px;
+            height: 6px;
+            position: absolute;
+            bottom: 1.3rem;
+            left: calc(50% - 3px);
+          }
         }
       }
     }
