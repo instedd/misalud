@@ -58,4 +58,12 @@ In verboice external services use the manifest at `http://PUBLIC_ADDRESS/verboic
 
 Write resourcemap collection information in `config/settings(.local).yml`.
 
+## Background jobs
+
+The following will run a worker every 30 seconds for background tasks.
+
+```bash
+$ bundle exec rake surveys:worker
+```
+
 

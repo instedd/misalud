@@ -37,7 +37,6 @@ def twilio_sms(phone, message)
   post "/twilio/sms", params: { From: phone, Body: message }
 end
 
-
 def start_surveys
   SurveyScheduler.run
 end

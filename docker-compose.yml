@@ -7,6 +7,12 @@ services:
       DATABASE_URL: postgres://postgres:password@db/misalud
     ports:
       - "3000:80"
+  job:
+    image: instedd/misalud:local
+    build: .
+    environment:
+      DATABASE_URL: postgres://postgres:password@db/misalud
+    command: bundle exec rake surveys:worker
   db:
     image: postgres:9.6.1
     environment:
