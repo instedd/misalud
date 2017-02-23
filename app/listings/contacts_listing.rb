@@ -1,6 +1,13 @@
 class ContactsListing < Listings::Base
   model Contact
 
+  scope :all, default: true
+  scope :followed_up
+  scope 'scheduled surveys', :surveys_scheduled
+  scope 'ongoing surveys', :surveys_ongoing
+  scope 'stalled surveys', :surveys_stalled
+  scope :hang_ups
+
   export :csv, :xls
 
   column :phone
