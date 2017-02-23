@@ -36,9 +36,9 @@ class ContactsListing < Listings::Base
     end
   end
 
-  column do |c|
+  column '', class: 'action' do |c|
     if format == :html
-      link_to raw('<i class="material-icons dp48">replay</i>'), start_survey_contact_path(c.id), method: :post, class: "waves-effect waves-teal btn-flat tooltipped", data: { position: 'bottom', tooltip: "Restart survey" }
+      link_to raw('<i class="material-icons">replay</i>'), start_survey_contact_path(c.id), title: 'Restart survey', method: :post
     end
   end
 end

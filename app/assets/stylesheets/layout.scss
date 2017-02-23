@@ -48,6 +48,7 @@ nav {
         a {
           line-height: 90px;
           text-transform: uppercase;
+          padding: 0 20px;
         }
       }
     }
@@ -65,16 +66,152 @@ nav {
 }
 
 footer {
-  padding: 1rem 0;
-  .footer-copyright * {
-    display: inline-block;
-    vertical-align: middle;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  .footer-copyright {
+    padding: 0 .5rem;
+    * {
+      display: inline-block;
+      vertical-align: middle;
+    }
   }
 }
 
-// .footer-copyright img {
-//   height: 50px;
-// }
+
+
+// ------- Card with Table ----------
+
+.card {
+  border-radius: 3px;
+
+  .card-table-title {
+    @extend .black-text;
+    font-size: 20px;
+    font-weight: 400;
+    padding: 25px;
+    position: relative;
+    .count {
+      font-family: 'Chivo', sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      color: $primary-color;
+    }
+    .fixed-action-btn.horizontal {
+      position: absolute;
+      .btn-floating {
+        @extend .z-depth-0;
+        @extend .transparent;
+        &.flat {
+          @extend .black-text;
+        }
+      }
+      ul li {
+        margin-top: 0;
+      }
+    }
+  }
+
+
+  .card-table {
+    padding: 0;
+    > table {
+      @extend .bordered;
+
+      tr:hover {
+        .action {
+          opacity: 1;
+        }
+      }
+
+      th {
+        @extend .black-text;
+        white-space: nowrap;
+        padding: 0;
+        > * {
+          padding: 10px 25px;
+        }
+        a {
+          color: inherit;
+        }
+        &.sortable {
+          a {
+            position: relative;
+            display: inline-block;
+            &:after {
+              content: '';
+              font-family: 'Material Icons';
+              @extend .black-text;
+              position: absolute;
+              right: 0.3rem;
+              top: .7rem;
+              -webkit-font-feature-settings: 'liga';
+              -webkit-font-smoothing: antialiased;
+            }
+          }
+          &.asc a:after {
+            content: 'keyboard_arrow_up';
+          }
+          &.desc a:after {
+            content: 'keyboard_arrow_down';
+            top: .8rem;
+          }
+        }
+      }
+
+      td {
+        @extend .black-text;
+        padding: 10px 25px;
+        a {
+          color: inherit;
+        }
+      }
+    }
+    td.action {
+      @extend .grey-text;
+      transition: opacity ease-in-out .4s;
+      opacity: 0;
+      padding-left: 0px;
+      padding-right: 15px;
+    }
+
+    + .card-action {
+      ul {
+        margin: 0;
+        li {
+          @extend .black-text;
+          line-height: 2;
+          margin-left: 2rem;
+          a {
+            @extend .grey-text;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          &.disabled {
+            opacity: 0.3;
+          }
+        }
+      }
+
+    }
+  }
+
+  &.tableScroll {
+    width: 78.5vw;
+    .card-table {
+      overflow-x: auto;
+      table {
+        td, th {
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+}
+
+#clinics-map {
+  width: 100%;
+  height: 600px;
+}
 
 @media #{$large-and-up} {
   body > * {
@@ -83,7 +220,14 @@ footer {
   }
 }
 
-#clinics-map {
-  width: 100%;
-  height: 600px;
+@media #{$medium-and-down} {
+  .card.tableScroll {
+    width: 96vw;
+  }
+}
+
+@media #{$small-and-down} {
+  .card.tableScroll {
+    width: 94vw;
+  }
 }

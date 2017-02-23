@@ -1,9 +1,9 @@
 = paginator.render do
   %ul.pagination
+    %li
+      = paginator.instance_variable_get("@options")[:current_page]
+      of
+      = paginator.instance_variable_get("@options")[:total_pages]
+
     = prev_page_tag
-    - each_page do |page|
-      - if page.left_outer? || page.right_outer? || page.inside_window?
-        = page_tag page
-      - elsif !page.was_truncated?
-        = gap_tag
     = next_page_tag

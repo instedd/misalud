@@ -1,10 +1,4 @@
-.row
-  .col.s12
-    .card
-      .card-content
-        %span.card-title Clinics
-        = render_listing :clinics
-
+= render_listing :clinics
 .fixed-action-btn
   = link_to sync_clinics_path, class: "btn-floating btn-large red tooltiped", "data-position": "left", "data-tooltip": "Import from Resourcemap", method: :post do
     %i.large.material-icons sync

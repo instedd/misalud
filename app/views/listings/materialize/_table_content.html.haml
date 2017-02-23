@@ -1,0 +1,51 @@
+.listings-table-content
+  - unless listing.items.empty?
+    .card.tableScroll
+      .card-table-title
+        %span.count
+          =listing.items.total_count
+          =listing.name
+        - unless listing.export_formats.empty?
+          .fixed-action-btn.horizontal
+            %a.btn-floating.tooltipped{"data-position" => "top", "data-tooltip" => "Download as"}
+              %i.material-icons.grey-text file_download
+            %ul
+              / = listing.export_message
+              - listing.export_formats.each do |format|
+                %li
+                  = link_to format, listing.url_for_format(format), class: 'btn-floating flat', download: true
+      .card-table
+        %table.bordered.highlight{'class' => listing.table_css_class}
+          %thead
+            - if listing.selectable?
+              %th.batch-selection-header
+                %input#batch-selection{:type => "checkbox"}
+
+            - listing.columns.each do |col|
+              %th{'class' => "#{'sortable ' + (col.sort || '') if col.sortable?}" }
+                - if col.sortable?
+                  = link_to col.human_name, listing.url_for_sort(col.key, col.next_sort_direction), remote: true
+                - else
+                  = col.human_name
+
+          %tbody
+            - listing.items.each do |item|
+              %tr{class: listing.row_style_for(item)}
+                - if listing.selectable?
+                  %td
+                    %input.checkbox-selection{:name => "selected", :type => "checkbox", :value => item.id}
+                - listing.columns.each do |col|
+                  %td{class: col.cell_css_class}
+                    = col.value_for(item)
+
+      .card-action.right-align
+        %ul.pagination
+          - if listing.paginated?
+            %li
+              = paginate listing.items, :remote => true, :theme => listing.kaminari_theme, :params => listing.params, :remote => true
+
+
+
+  - else
+    .card.large.white.black-text
+      = listing.no_data_message
