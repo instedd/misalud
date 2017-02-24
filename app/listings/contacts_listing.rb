@@ -49,13 +49,20 @@ class ContactsListing < Listings::Base
 
   column '', class: 'action' do |c|
     if format == :html
-      link_to raw('<i class="material-icons">replay</i>'), start_survey_contact_path(c.id), title: 'Restart survey', method: :post
+      link_to raw('<i class="material-icons">replay</i>'), start_survey_contact_path(c.id), class: "tooltiped", "data-tooltip": 'Restart survey', method: :post
     end
   end
 
   def boolean(value)
     if format == :html
-      value.try { |v| v ? "Yes" : "No" }
+      case value
+      when nil
+        "-"
+      when true
+        "Yes"
+      when false
+        "No"
+      end
     else
       value.to_s.upcase
     end
