@@ -39,7 +39,7 @@ $(function() {
   var popupFn = _.template("\
     <b><%= clinic.name || clinic.short_name %></b>\
     <p>\
-      <span>Visited: <%= clinic.selected_times %> times</span><br/>\
+      <span>Suggested: <%= clinic.selected_times %> times</span><br/>\
       <span>Rated: <%= clinic.rated_times %> times</span><br/>\
       <span>Avg rating: <%= clinic.rated_times > 0 ? _.round(clinic.avg_rating, 2) : 'N/A'%></span><br/>\
     </p> \
