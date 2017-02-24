@@ -49,7 +49,7 @@ gem 'gon'
 source 'https://rails-assets.org' do
   gem 'rails-assets-leaflet'
   gem 'rails-assets-lodash'
-  gem 'rails-assets-d3', '~> 3.4.11'
+  gem 'rails-assets-d3', '~> 3.5'
 end
 
 group :development, :test do
