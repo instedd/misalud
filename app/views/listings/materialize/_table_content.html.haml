@@ -40,7 +40,7 @@
         %ul.pagination
           - if listing.paginated?
             %li
-              = paginate listing.items, :remote => true, :theme => listing.kaminari_theme, :params => listing.params, :remote => true
+              = paginate listing.items, :remote => true, :theme => listing.kaminari_theme, :params => listing.params
 
 
 
