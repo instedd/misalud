@@ -16,6 +16,7 @@
 //= require materialize
 //= require listings
 //= require leaflet
+//= require leaflet-sleep
 //= require d3
 //= require_tree .
 

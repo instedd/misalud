@@ -26,9 +26,7 @@ class WelcomeController < ApplicationController
       ["Stalled", @surveys_stalled],
       ["Pending follow ups", @surveys_scheduled]
     ]}
-  end
 
-  def map
     @clinics = Clinic.without_deleted.all
     gon.clinics = @clinics
   end

@@ -48,6 +48,7 @@ gem 'gon'
 
 source 'https://rails-assets.org' do
   gem 'rails-assets-leaflet'
+  gem 'rails-assets-leaflet-sleep'
   gem 'rails-assets-lodash'
   gem 'rails-assets-d3', '~> 3.5'
 end
