@@ -1,13 +1,12 @@
-.row
-  .col.s8.m8
-    .linechart{data: @calls_data}
-      %svg
-  .col.s4.m4
-    .donut{data: @surveys_data}
-      %svg
-
-.row
+.row.full
   .col.s12
+    #statistics
+      .col.s8.m8
+        .linechart{data: @calls_data}
+          %svg
+      .col.s4.m4
+        .donut{data: @surveys_data}
+          %svg
     #clinics-map
 
 .row
