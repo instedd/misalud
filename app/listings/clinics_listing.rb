@@ -3,8 +3,8 @@ class ClinicsListing < Listings::Base
   model do
     Clinic.without_deleted.select %{
       clinics.*,
-      (SELECT count(*) FROM Contacts WHERE NOT(Contacts.survey_was_seen) AND Contacts.survey_chosen_clinic_id = clinics.id) as contacts_seen,
-      (SELECT count(*) FROM Contacts WHERE Contacts.survey_was_seen AND Contacts.survey_chosen_clinic_id = clinics.id) as contacts_rejected
+      (SELECT count(*) FROM Contacts WHERE Contacts.survey_was_seen AND Contacts.survey_chosen_clinic_id = clinics.id) as contacts_seen,
+      (SELECT count(*) FROM Contacts WHERE NOT(Contacts.survey_was_seen) AND Contacts.survey_chosen_clinic_id = clinics.id) as contacts_rejected
     }
   end
 
