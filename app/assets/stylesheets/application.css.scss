@@ -20,4 +20,7 @@
  $secondary-color: color("green", "base") !default;
  $footer-bg-color: rgb(225, 225, 225) !default;
  @import 'materialize';
- @import 'layout'
+ @import 'layout';
+ @import 'donut';
+ @import 'linechart';
+

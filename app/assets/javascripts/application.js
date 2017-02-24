@@ -16,6 +16,7 @@
 //= require materialize
 //= require listings
 //= require leaflet
+//= require d3
 //= require_tree .
 
 function initComponents(dom) {

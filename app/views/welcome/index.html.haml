@@ -1,4 +1,11 @@
 .row
+  .col.s8.m8
+    .linechart{data: @calls_data}
+      %svg
+  .col.s4.m4
+    .donut{data: @surveys_data}
+      %svg
+
 .row
   .col.s12.m6
     .card
@@ -23,41 +30,3 @@
             %label{for: "phone"} Phone number
       .card-action
         %button.btn.waves-effect.waves-light{type: "submit"} Start
-
-.row
-  .col.s12.m6
-    .card
-      .card-content
-        %span.card-title
-          Calls stats
-        %p
-          %ul.collection
-            %li.collection-item
-              Inbound calls:
-              = @inbound_calls
-            %li.collection-item
-              Hangups:
-              = @hang_ups
-            %li.collection-item
-              Voice info:
-              = @voice_info
-            %li.collection-item
-              Sms info:
-              = @sms_info
-            %li.collection-item
-              Followed up:
-              = @followed_up
-
-        %span.card-title
-          Survey stats
-        %p
-          %ul.collection
-            %li.collection-item
-              Surveys scheduled:
-              = @surveys_scheduled
-            %li.collection-item
-              Surveys ongoing:
-              = @surveys_ongoing
-            %li.collection-item
-              Surveys stalled:
-              = @surveys_stalled

@@ -1,0 +1,49 @@
+.linechart {
+  margin:0;
+  font-size: 16px;
+  font-family: 'Chivo', sans-serif;
+  font-weight: 700;
+  text-anchor: middle;
+
+  svg * {
+    pointer-events: none;
+  }
+
+  .value {
+    font-size: 60px;
+    fill: #3f51b5;
+  }
+
+  .label {
+    font-size: 16px;
+    text-transform: uppercase;
+    baseline-shift: -2em;
+    fill: #3f51b5;
+    text-transform: uppercase;
+  }
+
+  .step .label {
+    font-family: 'Archivo Narrow', sans-serif;
+    font-size: 14px;
+    text-transform: none;
+    baseline-shift: -66px;
+    font-weight: 400;
+  }
+
+  .step .icon {
+    font-family: 'Material Icons';
+    font-size: 24px;
+    baseline-shift: -48px;
+  }
+
+  line {
+    stroke-width: 4px;
+  }
+
+  .line {
+    fill: none;
+    stroke: #9e9e9e;
+    stroke-width: 4px;
+    stroke-linecap: round;
+  }
+}

@@ -9,6 +9,23 @@ class WelcomeController < ApplicationController
     @surveys_scheduled = Contact.surveys_scheduled.count
     @surveys_ongoing = Contact.surveys_ongoing.count
     @surveys_stalled = Contact.surveys_stalled.count
+
+    @calls_data = {
+      samples: [
+        ["call_end", "Hangups", @hang_ups],
+        ["call", "Voice info", @voice_info],
+        ["chat_bubble_outline", "SMS info", @sms_info],
+        ["check", "Follow ups", @followed_up]
+      ],
+      total:["Inbound calls", @inbound_calls]
+    }
+
+    @surveys_data = { d: [
+      ["Follow ups", @followed_up],
+      ["Ongoing", @surveys_ongoing],
+      ["Stalled", @surveys_stalled],
+      ["Pending follow ups", @surveys_scheduled]
+    ]}
   end
 
   def map
