@@ -18,6 +18,15 @@
 //= require leaflet
 //= require_tree .
 
+function initComponents(dom) {
+  $(".tooltiped", dom).tooltip({delay: 50});
+  $(".dropdown-button", dom).dropdown();
+}
+
 $(function(){
-  $(".tooltiped").tooltip({delay: 50});
+  initComponents($(document));
+
+  $(document).on("listings:loaded", ".listing", function(e, dom) {
+    initComponents(dom.element);
+  });
 });
