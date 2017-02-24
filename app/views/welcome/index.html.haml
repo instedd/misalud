@@ -9,27 +9,27 @@
           %svg
     #clinics-map
 
-.row
-  .col.s12.m6
-    .card
-      .card-content
-        %span.card-title
-          Find a clinic calling
+  .row
+    .col.s12.m6
+      .card
+        .card-content
+          %span.card-title
+            Find a clinic calling
 
-          = Settings.twilio.phone_number
-      .card-action
-        = link_to "Go to verboice", "#{Settings.verboice.url}/projects/#{Settings.verboice.project}/contacts", target: '_blank'
+            = Settings.twilio.phone_number
+        .card-action
+          = link_to "Go to verboice", "#{Settings.verboice.url}/projects/#{Settings.verboice.project}/contacts", target: '_blank'
 
-.row
-  .col.s12.m6
-    = form_tag(start_survey_path, method: :post)
-    .card
-      .card-content
-        %span.card-title Test survey
-        .row
-          .input-field.col.s12
-            %i.material-icons.prefix phone
-            %input{id: "phone", type: "text", name: "phone"}
-            %label{for: "phone"} Phone number
-      .card-action
-        %button.btn.waves-effect.waves-light{type: "submit"} Start
+  .row
+    .col.s12.m6
+      = form_tag(start_survey_path, method: :post)
+      .card
+        .card-content
+          %span.card-title Test survey
+          .row
+            .input-field.col.s12
+              %i.material-icons.prefix phone
+              %input{id: "phone", type: "text", name: "phone"}
+              %label{for: "phone"} Phone number
+        .card-action
+          %button.btn.waves-effect.waves-light{type: "submit"} Start
