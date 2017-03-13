@@ -25,6 +25,7 @@ main {
 
 nav {
   @extend .z-depth-0;
+  background: $primary-color;
   font-family: 'Chivo', sans-serif;
   height: 90px;
   .brand-logo {
@@ -37,6 +38,7 @@ nav {
     }
     span {
       font-size: 1.5rem !important;
+      color: rgba(129,157,201,1);
       vertical-align: middle;
     }
   }
