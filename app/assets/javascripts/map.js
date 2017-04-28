@@ -4,8 +4,8 @@ $(function() {
 
   // Setup map
   var map = L.map('clinics-map', {sleepNote: false, sleepOpacity: 1}).setView([40.7128, -74.0059], 13);
-  L.tileLayer('http://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}', {
-      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+  L.tileLayer('//cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attribution">CARTO</a>'
   }).addTo(map);
 
   // Linearly scale size based on times selected
