@@ -49,7 +49,7 @@ class ServicesController < ApplicationController
     variables = {}
     @contact.clinics.each_with_index do |clinic, index|
       schedule = @contact.urgent ? clinic.walk_in_schedule : clinic.schedule
-      variables["clinic#{index + 1}"] = [clinic.display_name, clinic.address, clinic.borough_label, schedule].map(&:presence).compact.join(", ")
+      variables["clinic#{index + 1}"] = clinic.sms_info(@contact.urgent)
     end
 
     render json: variables

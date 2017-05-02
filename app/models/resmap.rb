@@ -12,4 +12,7 @@ class Resmap
     @api.collections.find(collection_id).sites.all.each { |site| yield site if block_given? }
   end
 
+  def self.edit_site_url(site_id)
+    "http://#{Settings.resmap.host}/en/collections?editing_site=#{site_id}&collection_id=#{Settings.resmap.collection_id}&z=12"
+  end
 end

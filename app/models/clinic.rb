@@ -23,6 +23,42 @@ class Clinic < ApplicationRecord
     end
   end
 
+  CLINIC_SAMPLE_SIZE = 3
+  MAX_SMS_LENGTH = 160
+
+  def fits_sms_message_errors
+    # the display names are combined with ", '1' for {display_name}" in `MessageProcessor#clinic_short_names_as_options`
+    # and some instruction prefix text need to added
+    max_display_name_size = (
+      (
+        MAX_SMS_LENGTH - I18n.t('survey.which_clinic_did_you_choose').size - I18n.t('survey.reply_with').size - 10 * CLINIC_SAMPLE_SIZE
+      ) / CLINIC_SAMPLE_SIZE
+    ).floor
+
+    @fits_sms_message_errors ||= begin
+      res = []
+
+      res << "name needs to be shorter than #{max_display_name_size} chars." if self.display_name.size > max_display_name_size
+
+      walk_in_schedule_sms_info = self.sms_info(true)
+      res << "sms info with walk in schedule is #{walk_in_schedule_sms_info.size} chars long instead of #{MAX_SMS_LENGTH}." if  walk_in_schedule_sms_info.size > MAX_SMS_LENGTH
+
+      regular_schedule_sms_info = self.sms_info(false)
+      res << "sms info with regular schedule is #{regular_schedule_sms_info.size} chars long instead of #{MAX_SMS_LENGTH}." if  regular_schedule_sms_info.size > MAX_SMS_LENGTH
+
+      res
+    end
+  end
+
+  def fits_sms?
+    fits_sms_message_errors.size == 0
+  end
+
+  def sms_info(urgent)
+    schedule = urgent ? self.walk_in_schedule : self.schedule
+    [self.display_name, self.address, self.borough_label, schedule].map(&:presence).compact.join(", ")
+  end
+
   def self.import
     ids = Clinic.all.pluck(:id)
     Resmap.new.import_sites do |site|
@@ -57,7 +93,7 @@ class Clinic < ApplicationRecord
 
   def self.pick(filter = {})
     # TODO: prioritise those with fewer visits so far
-    clinics = filtered(filter).all.sample(3)
+    clinics = filtered(filter).all.sample(CLINIC_SAMPLE_SIZE)
 
     clinics.each do |c|
       c.with_lock do

@@ -8,6 +8,25 @@ class ClinicsListing < Listings::Base
     }
   end
 
+  scope :all, default: true
+  scope 'to review', :sms_warning, lambda { |clinics|
+    Kaminari.paginate_array(clinics.select { |c| !c.fits_sms? })
+  }
+
+  row_style do |clinic|
+    'warning' unless clinic.fits_sms?
+  end
+
+  column '' do |clinic|
+    unless clinic.fits_sms?
+      content_tag(:a, href: Resmap.edit_site_url(clinic.resmap_id), target: "_blank") do
+        content_tag(:i, class: 'material-icons', title: clinic.fits_sms_message_errors.join(" ")) do
+          "warning"
+        end
+      end
+    end
+  end
+
   column :name
   column :address
   column :schedule
