@@ -48,6 +48,26 @@ RSpec.describe MessageProcessor, type: :model do
       expect(Contact.surveys_ongoing).to include(new_contact)
     end
 
+    it "should abort scheduled survey of same number" do
+      allow(channel).to receive(:send_sms)
+
+      contact.survey_status = nil
+      contact.survey_scheduled_at = Time.now.utc + 1.day
+      contact.save!
+
+      expect(Contact.surveys_scheduled).to include(contact)
+
+      new_contact = Contact.create!(phone: phone, tracking_status: 'sms_info', language: 'en', clinic1: clinic1, clinic2: clinic2, clinic3: clinic3)
+      subject.start_survey(new_contact)
+
+      contact.reload
+      expect(contact.survey_status).to be_nil
+      expect(contact.survey_scheduled_at).to be_nil
+
+      expect(Contact.surveys_scheduled).to_not include(contact)
+      expect(Contact.surveys_ongoing).to include(new_contact)
+    end
+
     it "should not change the completed surveys of same number" do
       allow(channel).to receive(:send_sms)
 

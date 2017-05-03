@@ -23,6 +23,7 @@ class Contact < ApplicationRecord
   scope :surveys_ongoing, -> { surveys_ongoing_or_stalled.where("survey_updated_at >= ?", 1.day.ago) }
   scope :surveys_stalled, -> { surveys_ongoing_or_stalled.where("survey_updated_at < ?", 1.day.ago) }
   scope :surveys_ongoing_or_stalled, -> { where("tracking_status <> 'followed_up' AND survey_status IS NOT NULL") }
+  scope :surveys_pending, -> { where("tracking_status <> 'hung_up' AND tracking_status <> 'followed_up' AND (survey_status IS NOT NULL OR survey_scheduled_at IS NOT NULL)") }
 
   scope :survey_ready_to_start, -> {
     t = Time.now.utc
@@ -79,7 +80,7 @@ class Contact < ApplicationRecord
   end
 
   def abort_same_phone_surveys
-    Contact.where(phone: self.phone).surveys_ongoing_or_stalled.each do |contact|
+    Contact.where(phone: self.phone).surveys_pending.each do |contact|
       contact.abort_survey!
     end
   end
