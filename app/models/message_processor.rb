@@ -6,8 +6,10 @@ class MessageProcessor
   def accept(from, body)
     old_locale = I18n.locale
 
-    @contact = Contact.find_by(phone: from)
-    return unless @contact
+    contacts = Contact.surveys_ongoing_or_stalled.where(phone: from)
+    return if contacts.empty?
+    raise "Multiple active surveys for phone: #{from}." unless contacts.one?
+    @contact = contacts.first
 
     I18n.locale = @contact.language || "en"
     @body = body

@@ -80,9 +80,39 @@ RSpec.describe MessageProcessor, type: :model do
 
   describe "#accept" do
     let(:unkown_phone) { "7890476" }
+    let(:phone) { "465789" }
 
     it "should noop for unkown numbers" do
       subject.accept(unkown_phone, "lorem ipsum")
+    end
+
+    it "should use contact within surveys_ongoing_or_stalled" do
+      allow(channel).to receive(:send_sms)
+
+      old_contact = Contact.create!(phone: phone, tracking_status: 'sms_info', language: 'en', clinic1: clinic1, clinic2: clinic2)
+      subject.start_survey(old_contact)
+      subject.accept phone, "yes"
+
+      new_contact = Contact.create!(phone: phone, tracking_status: 'sms_info', language: 'en', clinic1: clinic1, clinic2: clinic2)
+      subject.start_survey(new_contact)
+      subject.accept phone, "no"
+
+      old_contact.reload
+      new_contact.reload
+
+      expect(old_contact.survey_was_seen).to eq(true)
+      expect(new_contact.survey_was_seen).to eq(false)
+    end
+
+    it "should fail if there are multiple active contacts (invariant broken)" do
+      allow(channel).to receive(:send_sms)
+
+      old_contact = Contact.create!(phone: phone, tracking_status: 'sms_info', survey_status: 'pending_seen', language: 'en', clinic1: clinic1, clinic2: clinic2)
+      new_contact = Contact.create!(phone: phone, tracking_status: 'sms_info', survey_status: 'pending_seen', language: 'en', clinic1: clinic1, clinic2: clinic2)
+
+      expect {
+        subject.accept phone, "yes"
+      }.to raise_error("Multiple active surveys for phone: #{phone}.")
     end
   end
 
