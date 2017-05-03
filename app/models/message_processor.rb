@@ -91,19 +91,15 @@ class MessageProcessor
     I18n.locale = old_locale
   end
 
-  def start_survey(phone)
-    contact = Contact.find_or_initialize_by_phone(phone)
-    unless contact.persisted?
-      # Values for fresh contacts, should not happen actually
-      contact.tracking_status = "sms_info"
-    end
+  def start_survey(contact)
+    contact.abort_same_phone_surveys
 
     contact.clear_survey_data
     contact.survey_status = "pending_seen"
     contact.survey_updated_at = Time.now.utc
     contact.save!
 
-    @channel.send_sms(phone, I18n.t('survey.start_message', locale: contact.language || 'en'))
+    @channel.send_sms(contact.phone, I18n.t('survey.start_message', locale: contact.language || 'en'))
   end
 
   NOT_SEEN_REASON = { 1 => "could_not_get_there", 2 => "health_change", 3 => "cost", 4 => "rejected" }

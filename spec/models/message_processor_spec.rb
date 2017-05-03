@@ -12,19 +12,12 @@ RSpec.describe MessageProcessor, type: :model do
 
   describe "#start_survey" do
     let(:phone) { "123456" }
+    let!(:contact) { Contact.create!(phone: phone, tracking_status: 'sms_info', language: 'en', clinic1: clinic1, clinic2: clinic2, clinic3: clinic3) }
 
-    it "creates a new contact" do
+    it "should clean up survey data" do
       allow(channel).to receive(:send_sms)
 
-      expect {
-        subject.start_survey(phone)
-      }.to change(Contact, :count).by(1)
-    end
-
-    it "reuse existing contact cleaning up survey data" do
-      allow(channel).to receive(:send_sms)
-
-      subject.start_survey(phone)
+      subject.start_survey(contact)
       contact = Contact.find_by(phone: phone)
       contact.survey_status = "lorem"
       contact.survey_was_seen = true
@@ -32,7 +25,7 @@ RSpec.describe MessageProcessor, type: :model do
       contact.save!
 
       expect {
-        subject.start_survey(phone)
+        subject.start_survey(contact)
       }.to change(Contact, :count).by(0)
 
       contact = Contact.find_by(phone: phone)
@@ -41,15 +34,31 @@ RSpec.describe MessageProcessor, type: :model do
       expect(contact.survey_can_be_called).to be_nil
     end
 
+    it "should abort pending survey of same number" do
+      allow(channel).to receive(:send_sms)
+
+      subject.start_survey(contact)
+
+      expect(Contact.surveys_ongoing).to include(contact)
+
+      new_contact = Contact.create!(phone: phone, tracking_status: 'sms_info', language: 'en', clinic1: clinic1, clinic2: clinic2, clinic3: clinic3)
+      subject.start_survey(new_contact)
+
+      expect(Contact.surveys_ongoing).to_not include(contact)
+      expect(Contact.surveys_ongoing).to include(new_contact)
+    end
+
+    # TODO should not change the completed surveys of same number
+
     it "should send message to channel" do
       expect(channel).to receive(:send_sms).with(phone, I18n.t('survey.start_message', locale: 'en'))
-      subject.start_survey(phone)
+      subject.start_survey(contact)
     end
 
     it "should send message to channel with contact's language" do
-      Contact.create!(phone: phone, tracking_status: 'sms_info', language: 'es')
+      contact = Contact.create!(phone: phone, tracking_status: 'sms_info', language: 'es')
       expect(channel).to receive(:send_sms).with(phone, I18n.t('survey.start_message', locale: 'es'))
-      subject.start_survey(phone)
+      subject.start_survey(contact)
     end
   end
 
@@ -68,7 +77,7 @@ RSpec.describe MessageProcessor, type: :model do
     it "should track responses (seen)" do
       allow(channel).to receive(:send_sms)
 
-      subject.start_survey(phone)
+      subject.start_survey(contact)
       subject.accept phone, "yes"
       subject.accept phone, "2"
       subject.accept phone, "5"
@@ -84,7 +93,7 @@ RSpec.describe MessageProcessor, type: :model do
     it "should track responses (rejected)" do
       allow(channel).to receive(:send_sms)
 
-      subject.start_survey(phone)
+      subject.start_survey(contact)
       subject.accept phone, "no"
       subject.accept phone, "4"
       subject.accept phone, "1"
@@ -100,7 +109,7 @@ RSpec.describe MessageProcessor, type: :model do
     it "should track responses (cost)" do
       allow(channel).to receive(:send_sms)
 
-      subject.start_survey(phone)
+      subject.start_survey(contact)
       subject.accept phone, "no"
       subject.accept phone, "3"
       subject.accept phone, "yes"
@@ -119,7 +128,7 @@ RSpec.describe MessageProcessor, type: :model do
 
     it "should send answers via channel" do
       expect(channel).to receive(:send_sms).with(contact.phone, I18n.t('survey.start_message', locale: 'en'))
-      subject.start_survey(contact.phone)
+      subject.start_survey(contact)
 
       expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.which_clinic_did_you_choose', locale: 'en')} Please reply with '1' for Name 1, '2' for Name 2")
       subject.accept contact.phone, "yes"
@@ -138,7 +147,7 @@ RSpec.describe MessageProcessor, type: :model do
       contact.update_column(:language, 'es')
 
       expect(channel).to receive(:send_sms).with(contact.phone, I18n.t('survey.start_message', locale: 'es'))
-      subject.start_survey(contact.phone)
+      subject.start_survey(contact)
 
       expect(channel).to receive(:send_sms).with(contact.phone, "#{I18n.t('survey.which_clinic_did_you_choose', locale: 'es')} Por favor conteste con '1' para Name 1, '2' para Name 2")
       subject.accept contact.phone, "yes"
@@ -161,7 +170,7 @@ RSpec.describe MessageProcessor, type: :model do
       allow(channel).to receive(:send_sms)
 
       phone = contact.phone
-      subject.start_survey(phone)
+      subject.start_survey(contact)
       subject.accept phone, "yes"
       subject.accept phone, "2"
       subject.accept phone, "4"
@@ -176,7 +185,7 @@ RSpec.describe MessageProcessor, type: :model do
       allow(channel).to receive(:send_sms)
 
       phone = contact.phone
-      subject.start_survey(phone)
+      subject.start_survey(contact)
       subject.accept phone, "yes"
       subject.accept phone, "2"
       subject.accept phone, "4"

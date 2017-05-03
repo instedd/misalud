@@ -58,6 +58,8 @@ class Contact < ApplicationRecord
   end
 
   def schedule_survey!
+    self.abort_same_phone_surveys
+
     timespan = if self.pregnant || self.urgent
       1.week
     else
@@ -66,6 +68,18 @@ class Contact < ApplicationRecord
     self.survey_scheduled_at = Time.now.utc + timespan
     self.clear_survey_data
     self.save!
+  end
+
+  def abort_survey!
+    self.survey_status = nil
+    self.survey_scheduled_at = nil
+    self.save!
+  end
+
+  def abort_same_phone_surveys
+    Contact.where(phone: self.phone).surveys_ongoing_or_stalled.each do |contact|
+      contact.abort_survey!
+    end
   end
 
   def clear_survey_data

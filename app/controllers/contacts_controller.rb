@@ -3,9 +3,9 @@ class ContactsController < ApplicationController
   end
 
   def start_survey
-    phone = Contact.find(params[:id]).phone
-    MessageProcessor.new(SmsChannel.build).start_survey(phone)
-    flash[:notice] = "Follow-up SMS survey to #{phone} has been sent"
+    contact = Contact.find(params[:id])
+    MessageProcessor.new(SmsChannel.build).start_survey(contact)
+    flash[:notice] = "Follow-up SMS survey to #{contact.phone} has been sent"
     redirect_to contacts_path
   end
 end
