@@ -132,6 +132,8 @@ GEM
       kaminari
       rails
       sass-rails
+    local_time (1.0.3)
+      coffee-rails
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.4)
@@ -274,6 +276,7 @@ DEPENDENCIES
   jquery-rails
   listen (~> 3.0.5)
   listings
+  local_time
   materialize-sass
   paranoia
   pg (~> 0.18)
@@ -297,4 +300,4 @@ DEPENDENCIES
   web-console (>= 3.3.0)
 
 BUNDLED WITH
-   1.14.3
+   1.14.6

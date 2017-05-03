@@ -18,6 +18,7 @@
 //= require leaflet
 //= require leaflet-sleep
 //= require d3
+//= require local_time
 //= require_tree .
 
 function initComponents(dom) {

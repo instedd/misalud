@@ -38,6 +38,7 @@ gem 'haml-rails'
 gem 'twilio-ruby'
 gem 'listings'
 gem 'paranoia'
+gem 'local_time'
 
 gem 'rest-client', "< 2"
 gem 'alto_guisso', github: "instedd/alto_guisso", branch: 'master'

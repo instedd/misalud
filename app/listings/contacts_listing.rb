@@ -1,4 +1,6 @@
 class ContactsListing < Listings::Base
+  include LocalTimeHelper
+
   model do
     Contact.order(call_started_at: :desc)
   end
@@ -28,7 +30,9 @@ class ContactsListing < Listings::Base
     end
   end
 
-  column :call_started_at
+  column :call_started_at do |contact, value|
+    time(value)
+  end
 
   column :survey_status do |contact, status|
     if format == :html
@@ -38,7 +42,9 @@ class ContactsListing < Listings::Base
     end
   end
 
-  column :survey_scheduled_at
+  column :survey_scheduled_at do |contact, value|
+    time(value)
+  end
   column :survey_can_be_called, title: 'Can be called?' do |_, value|
     boolean(value)
   end
@@ -73,6 +79,14 @@ class ContactsListing < Listings::Base
       end
     else
       value.to_s.upcase
+    end
+  end
+
+  def time(value)
+    if format == :html
+      local_time(value) if value
+    else
+      value
     end
   end
 end
