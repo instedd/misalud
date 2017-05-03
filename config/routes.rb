@@ -4,8 +4,6 @@ Rails.application.routes.draw do
   root to: 'welcome#index'
   get '/map', to: 'welcome#map'
 
-  post 'start_survey', to: 'welcome#start_survey'
-
   post 'twilio/sms'
 
   match "services/find-clinic", to: "services#find_clinic", via: [:get, :post]

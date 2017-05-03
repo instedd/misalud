@@ -30,9 +30,4 @@ class WelcomeController < ApplicationController
     @clinics = Clinic.without_deleted.all
     gon.clinics = @clinics
   end
-
-  def start_survey
-    MessageProcessor.new(SmsChannel.build).start_survey(params[:phone])
-    redirect_to root_path
-  end
 end
