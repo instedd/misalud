@@ -55,14 +55,6 @@ class ServicesController < ApplicationController
     render json: variables
   end
 
-  def track_contact
-    contact = Contact.find_or_initialize_by_phone(params[:phone_number])
-    contact.tracking_status = params[:tracking_status]
-    contact.save!
-
-    head :ok
-  end
-
   def status_callback
     # TODO: Should we find_or_initialize_by CallSid?
     contact = Contact.find_or_initialize_by_phone(params[:From])

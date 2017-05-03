@@ -29,16 +29,5 @@
         <variable name="clinic3" display-name="Clinic 3" type="string"/>
       </response>
     </step>
-    <step name="register-contact"
-      display-name="Track a contact inbound call"
-      icon="robot"
-      type="callback"
-      callback-url="/services/track-contact">
-      <settings>
-        <variable name="phone_number" display-name="Phone Number" type="string"/>
-        <variable name="tracking_status" display-name="Tracking Status" type="string"/>
-      </settings>
-      <response type="none" />
-    </step>
   </steps>
 </verboice-service>
