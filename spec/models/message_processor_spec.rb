@@ -48,7 +48,23 @@ RSpec.describe MessageProcessor, type: :model do
       expect(Contact.surveys_ongoing).to include(new_contact)
     end
 
-    # TODO should not change the completed surveys of same number
+    it "should not change the completed surveys of same number" do
+      allow(channel).to receive(:send_sms)
+
+      subject.start_survey(contact)
+      contact.tracking_status = "followed_up"
+      contact.survey_was_seen = true
+      contact.save!
+
+      expect(Contact.followed_up).to include(contact)
+
+      new_contact = Contact.create!(phone: phone, tracking_status: 'sms_info', language: 'en', clinic1: clinic1, clinic2: clinic2, clinic3: clinic3)
+      subject.start_survey(new_contact)
+
+      contact.reload
+      expect(Contact.followed_up).to include(contact)
+      expect(contact.survey_was_seen).to eq(true)
+    end
 
     it "should send message to channel" do
       expect(channel).to receive(:send_sms).with(phone, I18n.t('survey.start_message', locale: 'en'))
