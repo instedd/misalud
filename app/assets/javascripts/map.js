@@ -15,7 +15,9 @@ $(function() {
   const MAX_SIZE = 20;
   const MIN_SIZE = 5;
   var sizeScaleFn = function(clinic) {
-    return (clinic.selected_times - minSelected) * (MAX_SIZE - MIN_SIZE) / (maxSelected - minSelected) + MIN_SIZE;
+    var r = (clinic.selected_times - minSelected) * (MAX_SIZE - MIN_SIZE) / (maxSelected - minSelected) + MIN_SIZE;
+    if (isNaN(r)) r = MIN_SIZE;
+    return r;
   };
 
   // HSV scale from 0 (red) to 120 (green) based on score
