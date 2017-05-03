@@ -4,7 +4,7 @@ class Clinic < ApplicationRecord
   has_many :raters, class_name: "Contact", foreign_key: "survey_chosen_clinic_id"
 
   def display_name
-    name.presence || short_name
+    short_name.presence || name
   end
 
   def borough_label
@@ -38,7 +38,7 @@ class Clinic < ApplicationRecord
     @fits_sms_message_errors ||= begin
       res = []
 
-      res << "name needs to be shorter than #{max_display_name_size} chars." if self.display_name.size > max_display_name_size
+      res << "short_name needs to be shorter than #{max_display_name_size} chars." if self.display_name.size > max_display_name_size
 
       walk_in_schedule_sms_info = self.sms_info(true)
       res << "sms info with walk in schedule is #{walk_in_schedule_sms_info.size} chars long instead of #{MAX_SMS_LENGTH}." if  walk_in_schedule_sms_info.size > MAX_SMS_LENGTH
@@ -56,7 +56,7 @@ class Clinic < ApplicationRecord
 
   def sms_info(urgent)
     schedule = urgent ? self.walk_in_schedule : self.schedule
-    [self.display_name, self.address, self.borough_label, schedule].map(&:presence).compact.join(", ")
+    [self.name, self.address, self.borough_label, schedule].map(&:presence).compact.join(", ")
   end
 
   def self.import

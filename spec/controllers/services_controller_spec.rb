@@ -9,10 +9,10 @@ RSpec.describe ServicesController, type: :controller do
     }
 
     let!(:clinics) do
-      [Clinic.create!(resmap_id: 1, short_name: "Clinic 1", free_clinic: true, borough: "manhattan"),
-       Clinic.create!(resmap_id: 2, short_name: "Clinic 2", free_clinic: true, borough: "brooklyn"),
-       Clinic.create!(resmap_id: 3, short_name: "Clinic 3", free_clinic: true, borough: "brooklyn"),
-       Clinic.create!(resmap_id: 4, short_name: "Clinic 4", free_clinic: false, borough: "brooklyn")]
+      [Clinic.create!(resmap_id: 1, short_name: "Clinic 1", short_name: "Cl 1", free_clinic: true, borough: "manhattan"),
+       Clinic.create!(resmap_id: 2, short_name: "Clinic 2", short_name: "Cl 2", free_clinic: true, borough: "brooklyn"),
+       Clinic.create!(resmap_id: 3, short_name: "Clinic 3", short_name: "Cl 3", free_clinic: true, borough: "brooklyn"),
+       Clinic.create!(resmap_id: 4, short_name: "Clinic 4", short_name: "Cl 4", free_clinic: false, borough: "brooklyn")]
     end
 
     it "returns text for clinics" do
@@ -137,9 +137,9 @@ RSpec.describe ServicesController, type: :controller do
 
   describe "GET #get_clinics" do
 
-    let(:clinic1) { Clinic.create!(resmap_id: 1, short_name: "Clinic 1", address: "ADDRESS1", schedule: "SCHEDULE", walk_in_schedule: "WALK_IN_SCHEDULE") }
-    let(:clinic2) { Clinic.create!(resmap_id: 2, short_name: "Clinic 2", address: "ADDRESS2", borough: "staten_island", schedule: "SCHEDULE", walk_in_schedule: "WALK_IN_SCHEDULE") }
-    let(:clinic3) { Clinic.create!(resmap_id: 3, short_name: "Clinic 3", address: "ADDRESS3", borough: "manhattan") }
+    let(:clinic1) { Clinic.create!(resmap_id: 1, name: "Clinic 1", short_name: "Cl 1", address: "ADDRESS1", schedule: "SCHEDULE", walk_in_schedule: "WALK_IN_SCHEDULE") }
+    let(:clinic2) { Clinic.create!(resmap_id: 2, name: "Clinic 2", short_name: "Cl 2", address: "ADDRESS2", borough: "staten_island", schedule: "SCHEDULE", walk_in_schedule: "WALK_IN_SCHEDULE") }
+    let(:clinic3) { Clinic.create!(resmap_id: 3, name: "Clinic 3", short_name: "Cl 3", address: "ADDRESS3", borough: "manhattan") }
 
     it "retrieves clinics for contact" do
       contact = Contact.create!(phone: "9991000", call_sid: 100, urgent: false, tracking_status: "voice_info", clinic1: clinic1, clinic2: clinic2, clinic3: clinic3)
