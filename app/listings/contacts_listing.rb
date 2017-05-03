@@ -1,5 +1,7 @@
 class ContactsListing < Listings::Base
-  model Contact
+  model do
+    Contact.order(call_started_at: :desc)
+  end
 
   scope :all, default: true
   scope :followed_up
