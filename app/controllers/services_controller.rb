@@ -32,9 +32,9 @@ class ServicesController < ApplicationController
     @clinics.each_with_index do |clinic, index|
       if (index == @clinics.size - 1) && (@clinics.size > 1)
         nodes << t_to_say_node(:or)
-        nodes << to_say_node(clinic.display_name, "en")
+        nodes << to_say_node(clinic.name, "en")
       else
-        nodes << to_say_node("#{clinic.display_name}, ", "en")
+        nodes << to_say_node("#{clinic.name}, ", "en")
       end
     end
 

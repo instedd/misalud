@@ -9,10 +9,10 @@ RSpec.describe ServicesController, type: :controller do
     }
 
     let!(:clinics) do
-      [Clinic.create!(resmap_id: 1, short_name: "Clinic 1", short_name: "Cl 1", free_clinic: true, borough: "manhattan"),
-       Clinic.create!(resmap_id: 2, short_name: "Clinic 2", short_name: "Cl 2", free_clinic: true, borough: "brooklyn"),
-       Clinic.create!(resmap_id: 3, short_name: "Clinic 3", short_name: "Cl 3", free_clinic: true, borough: "brooklyn"),
-       Clinic.create!(resmap_id: 4, short_name: "Clinic 4", short_name: "Cl 4", free_clinic: false, borough: "brooklyn")]
+      [Clinic.create!(resmap_id: 1, name: "Clinic 1", short_name: "Cl 1", free_clinic: true, borough: "manhattan"),
+       Clinic.create!(resmap_id: 2, name: "Clinic 2", short_name: "Cl 2", free_clinic: true, borough: "brooklyn"),
+       Clinic.create!(resmap_id: 3, name: "Clinic 3", short_name: "Cl 3", free_clinic: true, borough: "brooklyn"),
+       Clinic.create!(resmap_id: 4, name: "Clinic 4", short_name: "Cl 4", free_clinic: false, borough: "brooklyn")]
     end
 
     it "returns text for clinics" do
@@ -33,9 +33,9 @@ RSpec.describe ServicesController, type: :controller do
       expect(actual_clinics).to contain_exactly(clinics[1], clinics[2], clinics[3])
 
       expect(response).to have_http_status(:success)
-      expect(response.body).to include(clinics[1].short_name)
-      expect(response.body).to include(clinics[2].short_name)
-      expect(response.body).to include(clinics[3].short_name)
+      expect(response.body).to include(clinics[1].name)
+      expect(response.body).to include(clinics[2].name)
+      expect(response.body).to include(clinics[3].name)
 
       expect(contact.reload.pregnant).to eq(false)
       expect(contact.urgent).to eq(true)
