@@ -4,7 +4,7 @@
       .card-table-title
         %span.count
           =listing.items.total_count
-          =listing.name
+          =listing.name.humanize
         - unless listing.export_formats.empty?
           %a.dropdown-button.tooltipped.right{"data-activates" => "dropdown", "data-beloworigin" => "true", "data-hover" => "true", "data-position" => "top", "data-tooltip" => "Download as", :href => "#"}
             %i.material-icons.grey-text file_download
