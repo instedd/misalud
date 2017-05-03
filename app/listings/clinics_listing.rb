@@ -20,7 +20,7 @@ class ClinicsListing < Listings::Base
   column '' do |clinic|
     unless clinic.fits_sms?
       content_tag(:a, href: Resmap.edit_site_url(clinic.resmap_id), target: "_blank") do
-        content_tag(:i, class: 'material-icons', title: clinic.fits_sms_message_errors.join(" ")) do
+        content_tag(:i, class: 'material-icons tooltiped', "data-tooltip": clinic.fits_sms_message_errors.join("<br/>")) do
           "warning"
         end
       end

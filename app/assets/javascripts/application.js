@@ -22,7 +22,7 @@
 //= require_tree .
 
 function initComponents(dom) {
-  $(".tooltiped", dom).tooltip({delay: 50});
+  $(".tooltiped", dom).tooltip({delay: 50, html: true});
   $(".dropdown-button", dom).dropdown();
 }
 
