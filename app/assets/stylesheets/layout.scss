@@ -242,6 +242,11 @@ ul.dropdown-content {
       padding-left: 0px;
       padding-right: 15px;
     }
+    td.link {
+      a:hover {
+        text-decoration: underline;
+      }
+    }
 
     + .card-action {
       ul {

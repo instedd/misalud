@@ -21,5 +21,9 @@ Rails.application.routes.draw do
     member do
       post :start_survey
     end
+
+    collection do
+      get :phone_calls
+    end
   end
 end

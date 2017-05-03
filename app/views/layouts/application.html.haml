@@ -23,7 +23,9 @@
         %ul
           = nav_link 'Dashboard', root_path, controller_name == 'welcome' && action_name == 'index'
           = nav_link 'Clinics', clinics_path, controller_name == 'clinics'
-          = nav_link 'Contacts', contacts_path, controller_name == 'contacts'
+          = nav_link 'Contacts', contacts_path, controller_name == 'contacts' && action_name != 'phone_calls'
+          - if controller_name == 'contacts' && action_name == 'phone_calls'
+            = nav_link "Calls from #{params[:phone]}", phone_calls_contacts_url(phone: params[:phone]), true
 
     %main
       = yield

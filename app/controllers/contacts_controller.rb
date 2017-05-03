@@ -2,6 +2,9 @@ class ContactsController < ApplicationController
   def index
   end
 
+  def phone_calls
+  end
+
   def start_survey
     contact = Contact.find(params[:id])
     MessageProcessor.new(SmsChannel.build).start_survey(contact)

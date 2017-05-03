@@ -1,24 +1,11 @@
-class ContactsListing < Listings::Base
+class PhoneCallsListing < Listings::Base
   model do
-    Contact.order(call_started_at: :desc)
-  end
+    contacts = Contact.where(phone: params[:phone])
 
-  scope :all, default: true
-  scope :followed_up
-  scope 'scheduled surveys', :surveys_scheduled
-  scope 'ongoing surveys', :surveys_ongoing
-  scope 'stalled surveys', :surveys_stalled
-  scope :hang_ups
+    contacts.order(call_started_at: :desc)
+  end
 
   export :csv, :xls
-
-  column :phone, class: 'link' do |contact, phone|
-    if format == :html
-      link_to phone, phone_calls_contacts_url(phone: phone)
-    else
-      phone
-    end
-  end
 
   column :tracking_status, title: 'Status' do |contact, status|
     if format == :html
