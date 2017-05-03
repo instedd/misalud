@@ -74,6 +74,7 @@ RSpec.describe ServicesController, type: :controller do
   describe "POST #status_callback" do
     let(:phone) { "1999345567" }
     let(:call_sid) { "465789" }
+    let(:next_call_sid) { "876543" }
     let(:contact) { contact = Contact.find_by(phone: phone) }
 
     it "creates a contact on first in-progress callback" do
@@ -88,11 +89,23 @@ RSpec.describe ServicesController, type: :controller do
       expect(contact.call_sid).to eq(call_sid)
     end
 
+    it "creates a contact for each in-progress callback" do
+      expect {
+        post :status_callback, params: { CallStatus: "in-progress", From: phone, CallSid: call_sid }
+      }.to change(Contact, :count).by(1)
+      expect(response).to have_http_status(:success)
+
+      expect {
+        post :status_callback, params: { CallStatus: "in-progress", From: phone, CallSid: next_call_sid }
+      }.to change(Contact, :count).by(1)
+      expect(response).to have_http_status(:success)
+    end
+
     it "marks as hung_up on failed" do
       post :status_callback, params: { CallStatus: "in-progress", From: phone, CallSid: call_sid }
 
       expect {
-        post :status_callback, params: { CallStatus: "failed", From: phone }
+        post :status_callback, params: { CallStatus: "failed", CallSid: call_sid }
       }.to change(Contact, :count).by(0)
       expect(response).to have_http_status(:success)
 
@@ -103,7 +116,7 @@ RSpec.describe ServicesController, type: :controller do
       post :status_callback, params: { CallStatus: "in-progress", From: phone, CallSid: call_sid }
 
       expect {
-        post :status_callback, params: { CallStatus: "completed", From: phone }
+        post :status_callback, params: { CallStatus: "completed", CallSid: call_sid }
       }.to change(Contact, :count).by(0)
       expect(response).to have_http_status(:success)
 
@@ -114,7 +127,7 @@ RSpec.describe ServicesController, type: :controller do
       post :status_callback, params: { CallStatus: "in-progress", From: phone, CallSid: call_sid }
 
       expect {
-        post :status_callback, params: { CallStatus: "completed", From: phone }
+        post :status_callback, params: { CallStatus: "completed", CallSid: call_sid }
       }.to change(Contact, :count).by(0)
       expect(response).to have_http_status(:success)
 

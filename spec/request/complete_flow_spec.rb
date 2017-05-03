@@ -69,7 +69,7 @@ RSpec.describe "Complete flow", type: :request do
   end
 
   def contact
-    Contact.find_or_initialize_by_phone(phone)
+    Contact.find_or_initialize_by_call_sid_and_phone(sid, phone)
   end
 
   around(:each) do |example|

@@ -56,12 +56,10 @@ class ServicesController < ApplicationController
   end
 
   def status_callback
-    # TODO: Should we find_or_initialize_by CallSid?
-    contact = Contact.find_or_initialize_by_phone(params[:From])
+    contact = Contact.find_or_initialize_by_call_sid_and_phone(params[:CallSid], params[:From])
 
     case params[:CallStatus]
     when "in-progress"
-      contact.call_sid = params[:CallSid]
       contact.tracking_status = "call_started"
       contact.clear_survey_data
       contact.save!

@@ -31,8 +31,10 @@ class Contact < ApplicationRecord
       .where("(EXTRACT(HOUR FROM survey_scheduled_at) * 60 + EXTRACT(MINUTES FROM survey_scheduled_at) + 15) >= ?", t.hour * 60 + t.min)
   }
 
-  def self.find_or_initialize_by_phone(phone)
-    Contact.find_or_initialize_by(phone: SmsChannel.clean_phone(phone))
+  def self.find_or_initialize_by_call_sid_and_phone(call_sid, phone)
+    Contact.find_or_initialize_by(call_sid: call_sid) do |contact|
+      contact.phone = SmsChannel.clean_phone(phone)
+    end
   end
 
   def pick_clinics(clinic_filter = {})
