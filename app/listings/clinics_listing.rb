@@ -1,6 +1,9 @@
 class ClinicsListing < Listings::Base
+  include AuthenticatedListing
 
   model do
+    authenticate!
+
     Clinic.without_deleted.select %{
       clinics.*,
       (SELECT count(*) FROM Contacts WHERE Contacts.survey_was_seen AND Contacts.survey_chosen_clinic_id = clinics.id) as contacts_seen,

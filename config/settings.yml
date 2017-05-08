@@ -10,3 +10,6 @@ resmap:
   user:
   pass:
   collection_id:
+basic_auth:
+  username: admin
+  password: admin

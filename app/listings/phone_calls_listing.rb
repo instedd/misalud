@@ -1,7 +1,10 @@
 class PhoneCallsListing < Listings::Base
+  include AuthenticatedListing
   include LocalTimeHelper
 
   model do
+    authenticate!
+
     contacts = Contact.where(phone: params[:phone])
 
     contacts.order(call_started_at: :desc)

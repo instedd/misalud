@@ -1,7 +1,10 @@
 class ContactsListing < Listings::Base
+  include AuthenticatedListing
   include LocalTimeHelper
 
   model do
+    authenticate!
+
     Contact.order(call_started_at: :desc)
   end
 
