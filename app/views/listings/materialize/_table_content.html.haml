@@ -40,7 +40,9 @@
         %ul.pagination
           - if listing.paginated?
             %li
-              = paginate listing.items, :remote => true, :theme => listing.kaminari_theme, :params => listing.params
+              - _params = listing.params
+              - _params = _params.to_unsafe_h unless _params.is_a?(Hash)
+              = paginate listing.items, :remote => true, :theme => listing.kaminari_theme, :params => _params
 
 
 
