@@ -13,3 +13,6 @@ resmap:
 basic_auth:
   username: admin
   password: admin
+api_basic_auth:
+  username: api
+  password: api

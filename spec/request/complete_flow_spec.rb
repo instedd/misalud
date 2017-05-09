@@ -14,27 +14,27 @@ def expect_stats(options)
 end
 
 def verboice_start_call(sid, phone)
-  post "/services/status-callback", params: { From: phone, CallSid: sid, CallStatus: "in-progress" }
+  post "/services/status-callback", params: { From: phone, CallSid: sid, CallStatus: "in-progress" }, headers: api_http_login_header
   expect(response).to have_http_status(:success)
 end
 
 def verboice_complete_call(sid, phone, params)
-  post "/services/status-callback", params: { From: phone, CallSid: sid, CallStatus: "completed" }.merge(params)
+  post "/services/status-callback", params: { From: phone, CallSid: sid, CallStatus: "completed" }.merge(params), headers: api_http_login_header
   expect(response).to have_http_status(:success)
 end
 
 def verboice_find_clinic(sid, params)
-  post "/services/find-clinic", params: { CallSid: sid }.merge(params)
+  post "/services/find-clinic", params: { CallSid: sid }.merge(params), headers: api_http_login_header
   expect(response).to have_http_status(:success)
 end
 
 def verboice_get_clinic(sid)
-  post "/services/get-clinics", params: { CallSid: sid }
+  post "/services/get-clinics", params: { CallSid: sid }, headers: api_http_login_header
   expect(response).to have_http_status(:success)
 end
 
 def twilio_sms(phone, message)
-  post "/twilio/sms", params: { From: phone, Body: message }
+  post "/twilio/sms", params: { From: phone, Body: message }, headers: api_http_login_header
 end
 
 def start_surveys

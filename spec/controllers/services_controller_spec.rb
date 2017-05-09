@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe ServicesController, type: :controller do
+  before(:each) {
+    @request.headers.merge(api_http_login_header)
+  }
 
   describe "GET #find-clinic" do
 
