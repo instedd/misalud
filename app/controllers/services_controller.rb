@@ -1,8 +1,6 @@
-class ServicesController < ApplicationController
+class ServicesController < ApiController
 
   include CallFlowResponses
-
-  skip_before_action :verify_authenticity_token
 
   def find_clinic
     # Sanitise input params

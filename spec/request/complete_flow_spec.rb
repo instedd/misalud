@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 def expect_can_view_dashboard
-  get "/"
+  get "/", headers: http_login_header
   expect(response).to have_http_status(:success)
 end
 
