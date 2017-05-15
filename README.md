@@ -43,16 +43,16 @@ Run the following with your public address to setup the webhook.
 
 ```
 $ bundle exec rails c
-irb(main):003:0> SmsChannel.new.config_webhook "http://PUBLIC_ADDRESS/twilio/sms"
+irb(main):003:0> SmsChannel.new.config_webhook "https://API_USER:API_PASS@PUBLIC_ADDRESS/twilio/sms"
 ```
 
 ## Verboice configuration
 
 Write verboice project information in `config/settings(.local).yml`.
 
-In verboice project settings set the "Status callback" to `http://PUBLIC_ADDRESS/services/status-callback`.
+In verboice project settings set the "Status callback" to `https://API_USER:API_PASS@PUBLIC_ADDRESS/services/status-callback`.
 
-In verboice external services use the manifest at `http://PUBLIC_ADDRESS/verboice.xml`.
+In verboice external services use the manifest at `https://PUBLIC_ADDRESS/verboice.xml`.
 
 ## Resourcemap configuration
 
@@ -66,4 +66,11 @@ The following will run a worker every 30 seconds for background tasks.
 $ bundle exec rake surveys:worker
 ```
 
+## Authentication
+
+In `config/settings(.local).yml` there are `basic_auth` and `api_basic_auth` entries. Each of them with `username` and `password` to restric access to the web interface and to secure api endpoints (For verboices and twilio the same `api_basic_auth` is used).
+
+## Deployment
+
+A Docker image at https://hub.docker.com/r/instedd/misalud/ is available. Configurations in `setting.yml` can be overridden using environment variables. Eg: `basic_auth.username` with `SETTINGS__BASIC_AUTH__USERNAME`.
 
