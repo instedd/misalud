@@ -1,21 +1,28 @@
 version: '2'
 services:
   app:
-    image: instedd/misalud:local
-    build: .
-    environment:
-      DATABASE_URL: postgres://postgres:password@db/misalud
+    build:
+      context: .
+      dockerfile: Dockerfile-dev
     ports:
-      - "3000:80"
-  job:
-    image: instedd/misalud:local
-    build: .
-    environment:
-      DATABASE_URL: postgres://postgres:password@db/misalud
-    command: bundle exec rake surveys:worker
+      - "3000:3000"
+    pid: host
+    command: /bin/sh -c 'cd /src && bundle && ./docker-fwd.sh && ./bin/rake db:setup && ./bin/rails s'
+    links:
+      - db
+    volumes:
+      - .:/src
+      - bundle:/usr/local/bundle
+    # command: bundle exec rake surveys:worker
+
   db:
     image: postgres:9.6.1
     environment:
-      POSTGRES_DB: misalud
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD:
+    volumes:
+      - db:/var/lib/postgresql/data
+
+volumes:
+  db:
+  bundle:

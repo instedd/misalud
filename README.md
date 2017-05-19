@@ -35,6 +35,18 @@ Instructions for setting up a development environment.
     $ bundle exec rails server
     ```
 
+### Development (Docker)
+
+The `docker-compose.yml` includes a postgres db and a app container with a rails environment.
+The `surveys:worker` / `rspec` can be run manually from it.
+
+```bash
+$ docker-compose up
+$ docker exec -it misalud_app_1 bash
+root@96be4add9815:/# cd /src
+root@96be4add9815:/src# rspec
+```
+
 ## Twilio configuration
 
 Write twilio channel information in `config/settings(.local).yml`.
