@@ -25,6 +25,7 @@ class Clinic < ApplicationRecord
 
   CLINIC_SAMPLE_SIZE = 3
   MAX_SMS_LENGTH = 160
+  GSM_CHARACTERS = /^[@£$¥èéùìòÇ\fØø\nÅåΔ_ΦΓΛΩΠΨΣΘΞÆæßÉ !\"#¤%&'()*+,-.\/[0-9]:;<=>\?¡[A-Z]ÄÖÑÜ§¿[a-z]äöñüà\^\{\}\[~\]\|€]+/
 
   def fits_sms_message_errors
     # the display names are combined with ", '1' for {display_name}" in `MessageProcessor#clinic_short_names_as_options`
@@ -40,14 +41,19 @@ class Clinic < ApplicationRecord
 
       res << "short_name needs to be shorter than #{max_display_name_size} chars." if self.display_name.size > max_display_name_size
 
-      walk_in_schedule_sms_info = self.sms_info(true)
-      res << "sms info with walk in schedule is #{walk_in_schedule_sms_info.size} chars long instead of #{MAX_SMS_LENGTH}." if  walk_in_schedule_sms_info.size > MAX_SMS_LENGTH
-
-      regular_schedule_sms_info = self.sms_info(false)
-      res << "sms info with regular schedule is #{regular_schedule_sms_info.size} chars long instead of #{MAX_SMS_LENGTH}." if  regular_schedule_sms_info.size > MAX_SMS_LENGTH
+      validate_sms(res, "sms info with walk in schedule", self.sms_info(true))
+      validate_sms(res, "sms info with regular schedule ", self.sms_info(false))
 
       res
     end
+  end
+
+  def validate_sms(res, prefix, sms)
+    gsm_valid = sms.match(GSM_CHARACTERS)[0]
+    if gsm_valid.size < sms.size
+      res << "#{prefix} has some gsm invalid text: #{sms[gsm_valid.size]}."
+    end
+    res << "#{prefix} is #{sms.size} chars long instead of #{MAX_SMS_LENGTH}." if  sms.size > MAX_SMS_LENGTH
   end
 
   def fits_sms?
