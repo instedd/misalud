@@ -62,7 +62,7 @@ class Clinic < ApplicationRecord
 
   def sms_info(urgent)
     schedule = urgent ? self.walk_in_schedule : self.schedule
-    [self.name, self.address, self.borough_label, schedule].map(&:presence).compact.join(", ")
+    [self.name, self.address, self.borough_label, schedule].map(&:presence).compact.map{|s| s.gsub("–","-")}.join(", ")
   end
 
   def self.import
