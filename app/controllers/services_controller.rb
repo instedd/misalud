@@ -6,6 +6,7 @@ class ServicesController < ApiController
     # Sanitise input params
     opts = {
       lang: params[:lang],
+      age: params[:age],
       pregnancy: (params[:pregnancy] == PREGNANT),
       urgent: (params[:when] == WHEN_URGENT),
       borough: Borough[params[:where]].try(&:name),

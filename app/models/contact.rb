@@ -104,6 +104,7 @@ class Contact < ApplicationRecord
     self.urgent = responses[:urgent]
     self.known_condition = responses[:known_condition]
     self.borough = responses[:borough]
+    self.age = responses[:age] =~ /^\d+$/ ? responses[:age].to_i : nil
   end
 
   def update_call_started_at

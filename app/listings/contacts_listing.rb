@@ -25,6 +25,11 @@ class ContactsListing < Listings::Base
     end
   end
 
+  column :age
+  column :borough do |contact, borough_name|
+    Borough[borough_name].try &:label
+  end
+
   column :tracking_status, title: 'Status' do |contact, status|
     if format == :html
       status.humanize

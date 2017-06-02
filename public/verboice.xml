@@ -12,6 +12,7 @@
         <variable name="pregnancy" display-name="Pregnancy" type="string"/>
         <variable name="when" display-name="When" type="string"/>
         <variable name="where" display-name="Where" type="string"/>
+        <variable name="age" display-name="Age" type="string"/>
         <variable name="knowncondition" display-name="Known condition" type="string"/>
       </settings>
       <response type="flow" />
