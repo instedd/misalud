@@ -63,7 +63,7 @@ class Contact < ApplicationRecord
   def schedule_survey!
     self.abort_same_phone_surveys
 
-    timespan = if self.pregnant || self.urgent
+    timespan = if self.urgent
       1.week
     else
       1.month

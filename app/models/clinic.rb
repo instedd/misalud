@@ -114,11 +114,7 @@ class Clinic < ApplicationRecord
   def self.filtered(filter = {})
     clinics = Clinic.without_deleted
 
-    # Disregard all other filters if it's women seeking care
-    if filter[:pregnancy]
-      return clinics.where(women_care: true)
-    end
-
+    clinics = clinics.where(women_care: true) if filter[:pregnancy]
     clinics = clinics.where(borough: filter[:borough]) if filter[:borough]
     clinics = clinics.order(free_clinic: (filter[:free_clinic] ? :asc : :desc))
 
