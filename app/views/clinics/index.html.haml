@@ -1,4 +1,33 @@
 = render_listing :clinics
+
+.row
+  .col.s3
+  .col.s6
+    .card
+      .card-table-title
+        %span Stats of clinics
+      .card-table
+        %table
+          %thead
+            %tr
+              %th
+              %th
+              - @borough.each do |b|
+                %th= b.label
+
+          %tbody
+            %tr
+              %th
+              %th Total
+              - @borough.each do |b|
+                %td= @clinics_total[b.name]
+
+            %tr
+              %th &nbsp;
+              %th Women Care
+              - @borough.each do |b|
+                %td= @clinics_women_total[b.name]
+
 .fixed-action-btn
   = link_to sync_clinics_path, class: "btn-floating btn-large red tooltiped", "data-position": "left", "data-tooltip": "Import from Resourcemap", method: :post do
     %i.large.material-icons sync
