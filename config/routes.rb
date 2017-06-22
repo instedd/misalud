@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   root to: 'welcome#index'
   get '/map', to: 'welcome#map'
+  get '/c/:id1(/:id2(/:id3))', to: 'public#clinics'
 
   post 'twilio/sms'
 

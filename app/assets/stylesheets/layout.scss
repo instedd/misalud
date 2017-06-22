@@ -95,6 +95,20 @@ nav {
   }
 }
 
+.clicnis-list {
+  .card {
+    .card-title {
+      padding: 12px 24px 0 24px;
+    }
+    .card-content {
+      padding: 6px 24px 12px 24px;
+    }
+    &.map .card-content {
+      padding-bottom: 0;
+    }
+  }
+}
+
 footer {
   padding-top: 1rem;
   padding-bottom: 1rem;

@@ -1,0 +1,18 @@
+.clicnis-list
+  - @clinics.each do |clinic|
+    .row
+      .col.s12.m6
+        .card
+          .card-stacked
+            .card-title
+              %span= clinic.name
+            .card-content
+              %p= clinic.address
+              %p
+                %b Schedule:
+                = clinic.schedule
+              %p
+                %b Walk-in schedule:
+                = clinic.walk_in_schedule
+            .card-action
+              = link_to "Open in google maps", "https://www.google.com/maps/search/?#{{api: 1,query: "#{clinic.latitude},#{clinic.longitude}"}.to_query}", target: "_blank"
