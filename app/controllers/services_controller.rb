@@ -46,10 +46,13 @@ class ServicesController < ApiController
     @contact.save!
 
     variables = {}
+    ids_params = {}
     @contact.clinics.each_with_index do |clinic, index|
       schedule = @contact.urgent ? clinic.walk_in_schedule : clinic.schedule
       variables["clinic#{index + 1}"] = clinic.sms_info(@contact.urgent)
+      ids_params["id#{index + 1}".to_sym] = clinic.id
     end
+    variables["url"] = public_clinics_url(ids_params)
 
     render json: variables
   end

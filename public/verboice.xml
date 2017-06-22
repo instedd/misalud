@@ -28,6 +28,7 @@
         <variable name="clinic1" display-name="Clinic 1" type="string"/>
         <variable name="clinic2" display-name="Clinic 2" type="string"/>
         <variable name="clinic3" display-name="Clinic 3" type="string"/>
+        <variable name="url" display-name="Url" type="string"/>
       </response>
     </step>
   </steps>
